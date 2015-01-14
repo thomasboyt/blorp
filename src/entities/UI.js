@@ -4,10 +4,12 @@
  */
 
 var Entity = require('./Entity');
+var AvgTick = require('../lib/AvgTick');
 
 class UI extends Entity {
   init(settings: any) {
     this.zindex = -1;
+    this.avgTick = new AvgTick(100);
   }
 
   drawAttract(ctx: any) {
@@ -44,9 +46,20 @@ class UI extends Entity {
     ctx.fillRect(x, y, barWidth, height);
   }
 
+  _drawFps(ctx: any) {
+    var fps = Math.round(1000 / this.avgTick.get());
+
+    ctx.fillStyle = 'black';
+    ctx.font = '10px Helvetica';
+    ctx.textAlign = 'right';
+    ctx.fillText(fps, this.game.width - 5, 10);
+  }
+
   draw(ctx: any) {
     ctx.fillStyle = 'white';
     ctx.strokeStyle = 'white';
+
+    this._drawFps(ctx);
 
     var fsm = this.game.fsm;
 
@@ -60,6 +73,10 @@ class UI extends Entity {
       this.drawLoading(ctx);
     }
 
+  }
+
+  update(dt: number) {
+    this.avgTick.update(dt);
   }
 }
 
