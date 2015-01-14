@@ -29,7 +29,12 @@ class Level {
     }
 
     var csv = doc.querySelector('data').textContent;
-    tileMap = csv.trim().split(',\n').map((row) => row.split(',').map((tile) => parseInt(tile, 10)));
+
+    // Parse CSV into a 2D array (row -> col)
+    tileMap = csv.trim()
+                 .split(',\n')
+                 .map((row) => row.split(',')
+                                  .map((tile) => parseInt(tile, 10)));
 
     this.tileNames = tileNames;
     this.tileMap = tileMap;
