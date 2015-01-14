@@ -4,7 +4,8 @@ var Entity = require('./entities/Entity');
 
 var ENTITY_TYPES = {
   'Block': require('./entities/Block'),
-  'Player': require('./entities/Player')
+  'Player': require('./entities/Player'),
+  'Blorp': require('./entities/Blorp')
 };
 
 class Level {

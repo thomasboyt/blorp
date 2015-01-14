@@ -11,7 +11,8 @@ module.exports = {
   },
   images: {
     'block': require('../../assets/images/block.png'),
-    'playerSheet': require('../../assets/images/player_sheet.png')
+    'playerSheet': require('../../assets/images/player_sheet.png'),
+    'blorpSheet': require('../../assets/images/blorp_sheet.png')
   },
   levels: {
     '1-1': require('../../assets/levels/1-1.tmx')

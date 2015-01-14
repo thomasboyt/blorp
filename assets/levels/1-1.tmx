@@ -13,6 +13,12 @@
    </properties>
    <image width="20" height="20" source="../images/player.png"/>
   </tile>
+  <tile id="2">
+   <properties>
+    <property name="Entity" value="Blorp"/>
+   </properties>
+   <image width="13" height="13" source="../images/blorp.png"/>
+  </tile>
  </tileset>
  <layer name="Tile Layer 1" width="16" height="7">
   <data encoding="csv">
@@ -20,7 +26,7 @@
 0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 0,0,0,0,0,0,0,2,0,0,0,0,0,0,1,1,
-0,0,0,0,0,0,0,1,0,0,1,0,1,1,1,1,
+0,0,0,0,0,0,0,1,0,3,1,0,1,1,1,1,
 1,1,0,0,0,0,1,1,1,1,1,0,1,1,1,1,
 1,1,1,0,0,1,1,1,1,1,1,0,1,1,1,1
 </data>

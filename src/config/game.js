@@ -8,11 +8,15 @@
  */
 
 module.exports = {
-  playerSpeed: 5,
-  jumpSpeed: 14,
   gravityAccel: 0.5,
 
+  playerSpeed: 5,
+  jumpSpeed: 14,
+
+  blorpSpeed: 3,
+
   playerWalkAnimMs: 200,
+  blorpWalkAnimMs: 200,
 };
 
 
