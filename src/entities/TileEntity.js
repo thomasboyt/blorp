@@ -2,8 +2,13 @@
 
 var Entity = require('./Entity');
 
+type Coordinates = {
+  x: number;
+  y: number;
+};
+
 class TileEntity extends Entity {
-  getCenter(tileX: number, tileY: number) {
+  getCenter(tileX: number, tileY: number): Coordinates {
     var tileH = this.game.tileHeight;
     var tileW = this.game.tileWidth;
 

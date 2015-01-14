@@ -17,6 +17,7 @@ var Entity = require('./entities/Entity');
 var UI = require('./entities/UI');
 var World = require('./entities/World');
 var Player = require('./entities/Player');
+var Level = require('./Level');
 
 type AssetMap = {
   images: {
@@ -25,16 +26,25 @@ type AssetMap = {
   audio: {
     [key:string]: ArrayBuffer;
   };
-  maps: {
+  levels: {
     [key:string]: string;
   }
+}
+
+type LevelMap = {
+  [key: string]: Level;
 }
 
 class Game {
   c: Coquette;
   assets: AssetMap;
+  levels: LevelMap;
+
   width: number;
   height: number;
+  tileWidth: number;
+  tileHeight: number;
+
   ui: UI;
 
   constructor() {
@@ -50,7 +60,7 @@ class Game {
     this.tileWidth = 20;
     this.tileHeight = 20;
 
-    this.c = window.__coquette__ = new Coquette(this, 'game-canvas', this.width, this.height, 'black');
+    this.c = window.__coquette__ = new Coquette(this, 'game-canvas', this.width, this.height, '#CEE682');
     this.c.renderer.getCtx().imageSmoothingEnabled = false;
 
     setupFullscreen(this.c.inputter.F);

@@ -1,11 +1,19 @@
 /* @flow */
 
+var Entity = require('./entities/Entity');
+
 var ENTITY_TYPES = {
   'Block': require('./entities/Block'),
   'Player': require('./entities/Player')
 };
 
 class Level {
+  tileNames: {
+    [key:number]: Entity
+  };
+
+  tileMap: Array<Array<number>>;  // </>
+
   constructor(level: string) {
     var tileNames = {};
     var tileMap;
@@ -27,7 +35,7 @@ class Level {
     this.tileMap = tileMap;
   }
 
-  getEntityTypeForTile(tileNum: number) {
+  getEntityTypeForTile(tileNum: number): Entity {
     var entityName = this.tileNames[tileNum - 1];
     var Type = ENTITY_TYPES[entityName];
 

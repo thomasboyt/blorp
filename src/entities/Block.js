@@ -3,6 +3,8 @@
 var TileEntity = require('./TileEntity');
 
 class Block extends TileEntity {
+  img: Image;
+
   init(settings: any) {
     this.size = {
       x: 20, y: 20

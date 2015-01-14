@@ -14,6 +14,9 @@ type AssetMap = {
   audio: {
     [key:string]: ArrayBuffer
   };
+  levels: {
+    [key:string]: Level
+  };
 }
 
 type AssetCfg = {
@@ -21,6 +24,9 @@ type AssetCfg = {
     [key:string]: string
   };
   audio: ?{
+    [key:string]: string
+  };
+  levels: ?{
     [key:string]: string
   };
 }
@@ -31,12 +37,7 @@ class AssetPreloader {
   numLoaded: number;
   audioCtx: any;
 
-  _images: ?{
-    [key:string]: string
-  };
-  _audio: ?{
-    [key:string]: string
-  };
+  assetCfg: AssetCfg;
 
   constructor (assetCfg : AssetCfg, audioCtx: any) {
     /* jshint loopfunc: true */
@@ -49,11 +50,9 @@ class AssetPreloader {
 
     this.audioCtx = audioCtx;
 
-    this._images = assetCfg.images;
-    this._audio = assetCfg.audio;
-    this._levels = assetCfg.levels;
+    this.assetCfg = assetCfg;
 
-    this.numTotal = _.keys(this._images).length + _.keys(this._audio).length + _.keys(this._levels).length;
+    this.numTotal = _.reduce(assetCfg, (acc, assets) => acc + _.keys(assets).length, 0);
     this.numLoaded = 0;
   }
 
@@ -73,7 +72,7 @@ class AssetPreloader {
       dfd.resolve(this.assets);
     }
 
-    _.each(this._images, (src, name) => {
+    _.each(this.assetCfg.images, (src, name) => {
       var img = new Image();
       img.onload = onAssetLoaded;
       img.src = src;
@@ -81,7 +80,7 @@ class AssetPreloader {
       this.assets.images[name] = img;
     });
 
-    _.each(this._audio, (src, name) => {
+    _.each(this.assetCfg.audio, (src, name) => {
       var xhr = new XMLHttpRequest();
       xhr.open('GET', src, true);
       xhr.responseType = 'arraybuffer';
@@ -96,7 +95,7 @@ class AssetPreloader {
       xhr.send();
     });
 
-    _.each(this._levels, (content, name) => {
+    _.each(this.assetCfg.levels, (content, name) => {
       this.assets.levels[name] = new Level(content);
       onAssetLoaded();
     });
