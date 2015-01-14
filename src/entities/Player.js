@@ -45,6 +45,11 @@ class Player extends TileEntity {
     });
   }
 
+  jump() {
+    this.vec.y = -this.game.config.jumpSpeed;
+    this.grounded = false;
+  }
+
   update(dt: number) {
     var step = dt/100;
 
@@ -61,8 +66,7 @@ class Player extends TileEntity {
 
     if (this.game.c.inputter.isPressed(this.game.c.inputter.UP_ARROW)) {
       if (this.grounded) {
-        this.vec.y = -this.game.config.jumpSpeed;
-        this.grounded = false;
+        this.jump();
       }
     }
 

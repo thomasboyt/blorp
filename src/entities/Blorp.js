@@ -3,6 +3,7 @@
 var Entity = require('./Entity');
 var TileEntity = require('./TileEntity');
 var Block = require('./Block');
+var Player = require('./Player');
 var Coquette = require('coquette');
 var rectangleIntersection = require('../lib/math').rectangleIntersection;
 var SpriteSheet = require('../lib/SpriteSheet');
@@ -79,9 +80,9 @@ class Blorp extends TileEntity {
   }
 
   collision(other: Entity) {
-    if (other instanceof Block) {
-      var intersect = rectangleIntersection(this, other);
+    var intersect = rectangleIntersection(this, other);
 
+    if (other instanceof Block) {
       if (intersect.w > intersect.h) {
         // do y correction
         if (intersect.fromAbove) {
@@ -106,6 +107,15 @@ class Blorp extends TileEntity {
           this.walkingRight = true;
         }
         this.vec.x = 0;
+      }
+    }
+
+    if (other instanceof Player) {
+      if (intersect.w > intersect.h) {
+        if (!intersect.fromAbove) {
+          this.game.c.entities.destroy(this);
+          other.jump();
+        }
       }
     }
   }
