@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="16" height="7" tilewidth="20" tileheight="20" nextobjectid="5">
+ <tileset firstgid="1" name="Blorp" tilewidth="20" tileheight="20">
+  <tile id="0">
+   <properties>
+    <property name="Entity" value="Block"/>
+   </properties>
+   <image width="20" height="20" source="../images/block.png"/>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="Entity" value="Player"/>
+   </properties>
+   <image width="20" height="20" source="../images/player.png"/>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 1" width="16" height="7">
+  <data encoding="csv">
+0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,
+0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+0,0,0,0,0,0,0,2,0,0,0,0,0,0,1,1,
+0,0,0,0,0,0,0,1,0,0,1,0,1,1,1,1,
+1,1,0,0,0,0,1,1,1,1,1,0,1,1,1,1,
+1,1,1,0,0,1,1,1,1,1,1,0,1,1,1,1
+</data>
+ </layer>
+</map>
