@@ -97,12 +97,12 @@ class Blorp extends TileEntity {
           this.center.y += Math.ceil(intersect.h);
           this.vec.y = 0;
         }
-      } else {
+      } else if (intersect.h > intersect.w) {
         // do x correction
-        if (intersect.fromLeft) {
-          this.center.x -= Math.floor(intersect.w);
+        if (intersect.fromLeft && other.isEdgeCollidable.left) {
+          this.center.x -= intersect.w;
           this.walkingRight = false;
-        } else {
+        } else if (other.isEdgeCollidable.right) {
           this.center.x += intersect.w;
           this.walkingRight = true;
         }

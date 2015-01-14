@@ -11,7 +11,7 @@ class SpriteSheet {
     this.xOffset = xOffset;
   }
 
-  get(num: index): Sprite {
+  get(num: number): Sprite {
     return new Sprite(this.img, num * this.xOffset, 0, this.xOffset, this.img.height);
   }
 }

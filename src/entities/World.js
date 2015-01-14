@@ -2,6 +2,7 @@
 
 var Entity = require('./Entity');
 var Player = require('./Player');
+var Block = require('./Block');
 var Level = require('../Level');
 
 class World extends Entity {
@@ -16,6 +17,40 @@ class World extends Entity {
     this.height = level.tileMap.length * this.game.tileHeight;
   }
 
+  /*
+   * This weird-lookin' method sets `isEdgeCollidable` on created blocks, which denotes whether
+   * or not they have an adjacent block on a given side. This prevents collision detection from
+   * firing on "seams" between blocks, which causes lots of weird issues.
+   *
+   * More info: http://gamedev.stackexchange.com/a/29037
+   */
+  _createBlock(level: Level, x: number, y: number) {
+    var row = level.tileMap[y];
+
+    var getTypeAtCoords = (x, y) => {
+      var tile = level.tileMap[y][x];
+      if (tile === 0) { return null; }
+      return level.getEntityTypeForTile(tile);
+    };
+
+    var tAbove = y > 0 ? getTypeAtCoords(x, y-1)  : null;
+    var tBelow = y < level.tileMap.length - 1 ? getTypeAtCoords(x, y+1) : null;
+    var tLeft = x > 0 ? getTypeAtCoords(x-1, y) : null;
+    var tRight = x < row.length - 1 ? getTypeAtCoords(x+1, y) : null;
+
+    this.game.createEntity(Block, {
+      tileX: x,
+      tileY: y,
+
+      isEdgeCollidable: {
+        top: tAbove !== Block,
+        bottom: tBelow !== Block,
+        left: tLeft !== Block,
+        right: tRight !== Block
+      }
+    });
+  }
+
   _createEntities(level: Level) {
     level.tileMap.forEach((row, y) => {
       row.forEach((tile, x) => {
@@ -23,10 +58,14 @@ class World extends Entity {
 
         var Type = level.getEntityTypeForTile(tile);
 
-        this.game.createEntity(Type, {
-          tileX: x,
-          tileY: y
-        });
+        if (Type === Block) {
+          this._createBlock(level, x, y);
+        } else {
+          this.game.createEntity(Type, {
+            tileX: x,
+            tileY: y
+          });
+        }
       });
     });
   }
