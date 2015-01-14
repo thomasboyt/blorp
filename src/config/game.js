@@ -10,5 +10,12 @@
 module.exports = {
   playerSpeed: 5,
   jumpSpeed: 14,
-  gravityAccel: 0.5
+  gravityAccel: 0.5,
+
+  playerWalkAnimMs: 200,
 };
+
+
+// Feed ms to timer on each update() tick
+// Timer cycles to next index after hitting threshold
+// Get sprite from timer on each draw()

@@ -1,13 +1,19 @@
 /* @flow */
 
+var Entity = require('./Entity');
 var TileEntity = require('./TileEntity');
 var Block = require('./Block');
 var Coquette = require('coquette');
-var rectangleIntersection = require('../math').rectangleIntersection
+var rectangleIntersection = require('../lib/math').rectangleIntersection;
+var SpriteSheet = require('../lib/SpriteSheet');
+var AnimationManager = require('../lib/AnimationManager');
 
 class Player extends TileEntity {
   img: Image;
+  anim: AnimationManager;
+
   grounded: boolean;
+  facingLeft: boolean;
 
   vec: {
     x: number;
@@ -20,19 +26,37 @@ class Player extends TileEntity {
     this.grounded = true;
 
     this.center = this.getCenter(settings.tileX, settings.tileY);
-    this.img = this.game.assets.images.player;
+    var sheet = new SpriteSheet(this.game.assets.images.playerSheet, this.game.tileWidth);
+
+    this.facingLeft = false;
+
+    this.anim = new AnimationManager('stand', {
+      stand: {
+        sheet: sheet,
+        frames: [0],
+        frameLengthMs: null
+      },
+
+      walk: {
+        sheet: sheet,
+        frames: [1, 0],
+        frameLengthMs: this.game.config.playerWalkAnimMs
+      }
+    });
   }
 
   update(dt: number) {
-    dt = dt/100;
+    var step = dt/100;
 
-    var spd = this.game.config.playerSpeed * dt;
+    var spd = this.game.config.playerSpeed * step;
 
     this.vec.x = 0;
     if (this.game.c.inputter.isDown(this.game.c.inputter.LEFT_ARROW)) {
       this.vec.x = -spd;
+      this.facingLeft = true;
     } else if (this.game.c.inputter.isDown(this.game.c.inputter.RIGHT_ARROW)) {
       this.vec.x = spd;
+      this.facingLeft = false;
     }
 
     if (this.game.c.inputter.isPressed(this.game.c.inputter.UP_ARROW)) {
@@ -45,16 +69,29 @@ class Player extends TileEntity {
     this.vec.y += this.game.config.gravityAccel;
 
     this.center.x += this.vec.x;
-    this.center.y += this.vec.y * dt;
+    this.center.y += this.vec.y * step;
+
+    this.anim.update(dt);
+
+    if (this.vec.x && this.grounded) {
+      this.anim.set('walk');
+    } else {
+      this.anim.set('stand');
+    }
   }
 
   draw(ctx: any) {
-    var img = this.img;
+    var sprite = this.anim.getSprite();
 
-    var x = this.center.x - this.img.width / 2;
-    var y = this.center.y - this.size.y / 2;
+    var destX = this.center.x - sprite.width / 2;
+    var destY = this.center.y - sprite.height / 2;
 
-    ctx.drawImage(img, x, y);
+    if (this.facingLeft) {
+      ctx.scale(-1, 1);
+      destX = (destX * -1) - sprite.width;
+    }
+
+    sprite.draw(ctx, destX, destY);
   }
 
   collision(other: Entity) {
