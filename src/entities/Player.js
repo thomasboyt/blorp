@@ -15,7 +15,7 @@ class Player extends TileEntity {
   };
 
   init(settings: any) {
-    this.size = {x: 20, y: 20};
+    this.size = {x: 11, y: 20};
     this.vec = {x: 0, y: 0};
     this.grounded = true;
 
@@ -28,6 +28,7 @@ class Player extends TileEntity {
 
     var spd = this.game.config.playerSpeed * dt;
 
+    this.vec.x = 0;
     if (this.game.c.inputter.isDown(this.game.c.inputter.LEFT_ARROW)) {
       this.vec.x = -spd;
     } else if (this.game.c.inputter.isDown(this.game.c.inputter.RIGHT_ARROW)) {
@@ -37,6 +38,7 @@ class Player extends TileEntity {
     if (this.game.c.inputter.isPressed(this.game.c.inputter.UP_ARROW)) {
       if (this.grounded) {
         this.vec.y = -this.game.config.jumpSpeed;
+        this.grounded = false;
       }
     }
 
@@ -49,7 +51,7 @@ class Player extends TileEntity {
   draw(ctx: any) {
     var img = this.img;
 
-    var x = this.center.x - this.size.x / 2;
+    var x = this.center.x - this.img.width / 2;
     var y = this.center.y - this.size.y / 2;
 
     ctx.drawImage(img, x, y);
