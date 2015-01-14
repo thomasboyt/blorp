@@ -99,7 +99,7 @@ class Blorp extends TileEntity {
       } else {
         // do x correction
         if (intersect.fromLeft) {
-          this.center.x -= intersect.w;
+          this.center.x -= Math.floor(intersect.w);
           this.walkingRight = false;
         } else {
           this.center.x += intersect.w;
