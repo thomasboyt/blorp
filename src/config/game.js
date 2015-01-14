@@ -8,5 +8,7 @@
  */
 
 module.exports = {
-  playerSpeed: 5
+  playerSpeed: 5,
+  jumpSpeed: 14,
+  gravityAccel: 0.5
 };
