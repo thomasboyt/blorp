@@ -15,6 +15,8 @@ class World extends Entity {
 
     this.width = level.tileMap[0].length * this.game.tileWidth;
     this.height = level.tileMap.length * this.game.tileHeight;
+
+    this.camY = this.game.height / 2;
   }
 
   /*
@@ -71,8 +73,24 @@ class World extends Entity {
   }
 
   draw(ctx: any) {
-    // var player = this.game.c.entities.all(Player)[0];
-    // this.game.c.renderer.setViewCenter(player.center);
+    // camY only moves if player is >1/5 screen px above/below it
+    var threshold = this.game.height/5;
+
+    var player = this.game.c.entities.all(Player)[0];
+    var diff = this.camY - player.center.y;
+
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0) {
+        this.camY -= diff - threshold;
+      } else {
+        this.camY -= diff + threshold;
+      }
+    }
+
+    this.game.c.renderer.setViewCenter({
+      x: player.center.x,
+      y: this.camY
+    });
   }
 }
 
