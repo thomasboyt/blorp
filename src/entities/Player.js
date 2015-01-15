@@ -56,6 +56,7 @@ class Player extends TileEntity {
     var spd = this.game.config.playerSpeed * step;
 
     this.vec.x = 0;
+
     if (this.game.c.inputter.isDown(this.game.c.inputter.LEFT_ARROW)) {
       this.vec.x = -spd;
       this.facingLeft = true;
@@ -99,12 +100,14 @@ class Player extends TileEntity {
   }
 
   collision(other: Entity) {
+
     if (other instanceof Block) {
       var intersect = rectangleIntersection(this, other);
 
       if (intersect.w > intersect.h) {
         // do y correction
         if (intersect.fromAbove) {
+
           this.center.y -= intersect.h;
 
           // prevent "sticky corners" while ascending
@@ -113,14 +116,14 @@ class Player extends TileEntity {
             this.vec.y = 0;
           }
         } else {
-          this.center.y += Math.ceil(intersect.h);
+          this.center.y += intersect.h;
           this.vec.y = 0;
         }
       } else {
         // do x correction
-        if (intersect.fromLeft) {
+        if (intersect.fromLeft && other.isEdgeCollidable.left) {
           this.center.x -= intersect.w;
-        } else {
+        } else if (other.isEdgeCollidable.right) {
           this.center.x += intersect.w;
         }
         this.vec.x = 0;

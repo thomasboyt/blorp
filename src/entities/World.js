@@ -71,8 +71,8 @@ class World extends Entity {
   }
 
   draw(ctx: any) {
-    var player = this.game.c.entities.all(Player)[0];
-    this.game.c.renderer.setViewCenter(player.center);
+    // var player = this.game.c.entities.all(Player)[0];
+    // this.game.c.renderer.setViewCenter(player.center);
   }
 }
 
