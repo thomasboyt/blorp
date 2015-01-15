@@ -63,6 +63,17 @@ class Game {
     this.c = window.__coquette__ = new Coquette(this, 'game-canvas', this.width, this.height, '#CEE682');
     this.c.renderer.getCtx().imageSmoothingEnabled = false;
 
+    // Install custom ticker loop that runs collider hook AFTER update
+    this.c.ticker.stop();
+    this.c.ticker = new Coquette.Ticker(this.c, (interval) => {
+      this.c.runner.update(interval);
+      this.update(interval);
+      this.c.entities.update(interval);
+      this.c.collider.update(interval);
+      this.c.renderer.update(interval);
+      this.c.inputter.update();
+    });
+
     setupFullscreen(this.c.inputter.F);
     addRegister(this.c);
 
