@@ -1,11 +1,14 @@
 /* @flow */
 
 var Entity = require('./Entity');
-var Block = require('./Block');
-var Coquette = require('coquette');
+var Block = require('./tiles/Block');
+var Ladder = require('./tiles/Ladder');
 var rectangleIntersection = require('../lib/math').rectangleIntersection;
 var SpriteSheet = require('../lib/SpriteSheet');
 var AnimationManager = require('../lib/AnimationManager');
+
+var WALK_STATE = 'walk';
+var LADDER_STATE = 'ladder';
 
 class Player extends Entity {
   img: Image;
@@ -13,6 +16,8 @@ class Player extends Entity {
 
   grounded: boolean;
   facingLeft: boolean;
+
+  state: string;
 
   vec: {
     x: number;
@@ -23,11 +28,13 @@ class Player extends Entity {
     this.center = settings.center;
     this.size = {x: 11, y: 20};
     this.vec = {x: 0, y: 0};
+    this.world = settings.world;
+    this.state = WALK_STATE;
 
     this.grounded = true;
     this.facingLeft = false;
 
-    var sheet = new SpriteSheet(this.game.assets.images.playerSheet, this.game.tileWidth);
+    var sheet = new SpriteSheet(this.game.assets.images.playerSheet, this.game.tileWidth, this.game.tileHeight);
 
     this.anim = new AnimationManager('stand', {
       stand: {
@@ -40,13 +47,20 @@ class Player extends Entity {
         sheet: sheet,
         frames: [1, 0],
         frameLengthMs: this.game.config.playerWalkAnimMs
+      },
+
+      climb: {
+        sheet: sheet,
+        frames: [2, 3],
+        frameLengthMs: this.game.config.playerWalkAnimMs
+      },
+
+      idleLadder: {
+        sheet: sheet,
+        frames: [4],
+        frameLengthMs: null
       }
     });
-  }
-
-  jump() {
-    this.vec.y = -this.game.config.jumpSpeed;
-    this.grounded = false;
   }
 
   update(dt: number) {
@@ -56,32 +70,106 @@ class Player extends Entity {
 
     this.vec.x = 0;
 
-    if (this.game.c.inputter.isDown(this.game.c.inputter.LEFT_ARROW)) {
-      this.vec.x = -spd;
-      this.facingLeft = true;
-    } else if (this.game.c.inputter.isDown(this.game.c.inputter.RIGHT_ARROW)) {
-      this.vec.x = spd;
-      this.facingLeft = false;
-    }
+    if (this.state === WALK_STATE) {
 
-    if (this.game.c.inputter.isPressed(this.game.c.inputter.UP_ARROW)) {
-      if (this.grounded) {
-        this.jump();
+      if (this.game.c.inputter.isDown(this.game.c.inputter.LEFT_ARROW)) {
+        this.vec.x = -spd;
+        this.facingLeft = true;
+      } else if (this.game.c.inputter.isDown(this.game.c.inputter.RIGHT_ARROW)) {
+        this.vec.x = spd;
+        this.facingLeft = false;
+      }
+
+      if (this.game.c.inputter.isPressed(this.game.c.inputter.UP_ARROW)) {
+        if (this.grounded) {
+          var behind = this.world.getTileAt(this.center);
+          if (behind instanceof Ladder) {
+            this._enterLadder(behind);
+          } else {
+            this.jump();
+          }
+        }
+      }
+
+      this.vec.y += this.game.config.gravityAccel;
+
+      this.center.x += this.vec.x;
+      this.center.y += this.vec.y * step;
+
+      if (this.vec.x && this.grounded) {
+        this.anim.set('walk');
+      } else {
+        this.anim.set('stand');
+      }
+
+    } else if (this.state === LADDER_STATE) {
+
+      this.vec.y = 0;
+
+      if (this.game.c.inputter.isDown(this.game.c.inputter.LEFT_ARROW)) {
+        // fall left
+      } else if (this.game.c.inputter.isDown(this.game.c.inputter.RIGHT_ARROW)) {
+        // fall right
+      }
+
+      if (this.game.c.inputter.isDown(this.game.c.inputter.UP_ARROW)) {
+        // climb
+        this.vec.y -= this.game.config.climbSpeed;
+      } else if (this.game.c.inputter.isDown(this.game.c.inputter.DOWN_ARROW)) {
+        // descend
+        this.vec.y += this.game.config.climbSpeed;
+      }
+
+      this.center.x += this.vec.x;
+      this.center.y += this.vec.y * step;
+
+      if (!this._checkOnLadder()) {
+        this._exitLadder();
+      }
+
+      if (this.vec.y) {
+        this.anim.set('climb');
+      } else {
+        this.anim.set('idleLadder');
       }
     }
 
-    this.vec.y += this.game.config.gravityAccel;
-
-    this.center.x += this.vec.x;
-    this.center.y += this.vec.y * step;
-
     this.anim.update(dt);
+  }
 
-    if (this.vec.x && this.grounded) {
-      this.anim.set('walk');
+  jump() {
+    this.vec.y = -this.game.config.jumpSpeed;
+    this.grounded = false;
+  }
+
+  _enterLadder(ladder) {
+    this.state = LADDER_STATE;
+    this.vec.x = 0;
+    this.vec.y = 0;
+
+    this.center.x = ladder.center.x;
+    this.center.y = ladder.center.y;
+  }
+
+  _exitLadder() {
+    this.state = WALK_STATE;
+  }
+
+  _checkOnLadder(): boolean {
+    var y;
+
+    if (this.vec.y < 0) {
+      // We're climbing, so check if the bottom edge of the player is on a ladder
+      y = this.center.y + this.size.y / 2;
+    } else if (this.vec.y > 0) {
+      // We're descending, so check if the top edge of the player is on a ladder
+      y = this.center.y - this.size.y / 2;
     } else {
-      this.anim.set('stand');
+      y = this.center.y;
     }
+
+    var tile = this.world.getTileAt({x: this.center.x, y: y});
+    return tile instanceof Ladder;
   }
 
   draw(ctx: any) {
@@ -99,7 +187,6 @@ class Player extends Entity {
   }
 
   collision(other: Entity) {
-
     if (other instanceof Block) {
       var intersect = rectangleIntersection(this, other);
 
@@ -126,6 +213,19 @@ class Player extends Entity {
           this.center.x += intersect.w;
         }
         this.vec.x = 0;
+      }
+    }
+
+    if (this.state !== LADDER_STATE) {
+      if (other instanceof Ladder) {
+        var intersect = rectangleIntersection(this, other);
+
+        // Ladders can be stood upon
+        if (intersect.w > intersect.h && intersect.fromAbove && other.isEdgeCollidable.top) {
+          this.center.y -= intersect.h;
+          this.vec.y = 0;
+          this.grounded = true;
+        }
       }
     }
   }

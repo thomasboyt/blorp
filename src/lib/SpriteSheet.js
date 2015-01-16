@@ -6,13 +6,22 @@ class SpriteSheet {
   img: Image;
   xOffset: number;
 
-  constructor(img: Image, xOffset: number) {
+  constructor(img: Image, spriteWidth: number, spriteHeight: number) {
     this.img = img;
-    this.xOffset = xOffset;
+    this.spriteWidth = spriteWidth;
+    this.spriteHeight = spriteHeight;
   }
 
   get(num: number): Sprite {
-    return new Sprite(this.img, num * this.xOffset, 0, this.xOffset, this.img.height);
+    var x = num * this.spriteWidth;
+
+    var row = 0;
+    while (x > (this.img.width - this.spriteWidth)) {
+      row++;
+      x -= this.img.width;
+    }
+
+    return new Sprite(this.img, x, row * this.spriteHeight, this.spriteWidth, this.spriteHeight);
   }
 }
 

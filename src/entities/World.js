@@ -2,16 +2,17 @@
 
 var Entity = require('./Entity');
 var Player = require('./Player');
-var Block = require('./Block');
+var Block = require('./tiles/Block');
 var Level = require('../Level');
 
 class World extends Entity {
   width: number;
   height: number;
   camY: number;
+  level: Level;
 
   init(settings: any) {
-    var level: Level = settings.level;
+    var level = this.level = settings.level;
     this._createEntities(level);
 
     this.width = level.tileMap[0].length * this.game.tileWidth;
@@ -20,36 +21,39 @@ class World extends Entity {
     this.camY = this.game.height / 2;
   }
 
+  getTileAt(center: Coordinates): Entity {
+    var row = Math.floor(center.y / this.game.tileHeight);
+    var col = Math.floor(center.x / this.game.tileWidth);
+
+    return this.tiles[row][col];
+  }
+
   /*
-   * This weird-lookin' method sets `isEdgeCollidable` on created blocks, which denotes whether
-   * or not they have an adjacent block on a given side. This prevents collision detection from
-   * firing on "seams" between blocks, which causes lots of weird issues.
+   * This weird-lookin' method sets `isEdgeCollidable` on created entities, which denotes whether
+   * or not they have an adjacent entity on a given side. This prevents collision detection from
+   * firing on "seams" between entities, which causes lots of weird issues.
    *
    * More info: http://gamedev.stackexchange.com/a/29037
    */
-  _createBlock(level: Level, x: number, y: number) {
+  _createEdgeSafeEntity(level: Level, Type: any, x: number, y: number): Entity {
     var row = level.tileMap[y];
 
-    var getTypeAtCoords = (x, y) => {
-      var tile = level.tileMap[y][x];
-      if (tile === 0) { return null; }
-      return level.getEntityTypeForTile(tile);
-    };
+    var getType = level.getEntityTypeForTileCoordinates.bind(level);
 
-    var tAbove = y > 0 ? getTypeAtCoords(x, y-1)  : null;
-    var tBelow = y < level.tileMap.length - 1 ? getTypeAtCoords(x, y+1) : null;
-    var tLeft = x > 0 ? getTypeAtCoords(x-1, y) : null;
-    var tRight = x < row.length - 1 ? getTypeAtCoords(x+1, y) : null;
+    var tAbove = y > 0 ? getType(x, y-1)  : null;
+    var tBelow = y < level.tileMap.length - 1 ? getType(x, y+1) : null;
+    var tLeft = x > 0 ? getType(x-1, y) : null;
+    var tRight = x < row.length - 1 ? getType(x+1, y) : null;
 
-    this.game.createEntity(Block, {
+    return this.game.createEntity(Type, {
       tileX: x,
       tileY: y,
 
       isEdgeCollidable: {
-        top: tAbove !== Block,
-        bottom: tBelow !== Block,
-        left: tLeft !== Block,
-        right: tRight !== Block
+        top: tAbove === null,
+        bottom: tBelow === null,
+        left: tLeft === null,
+        right: tRight === null
       }
     });
   }
@@ -57,30 +61,26 @@ class World extends Entity {
   _createEntities(level: Level) {
     // Create entiies from tiles
 
-    level.tileMap.forEach((row, y) => {
-      row.forEach((tile, x) => {
+    this.tiles = level.tileMap.map((row, y) => {
+      return row.map((tile, x) => {
         if (tile === 0) { return; }
 
         var Type = level.getEntityTypeForTile(tile);
 
-        if (Type === Block) {
-          this._createBlock(level, x, y);
-        } else {
-          this.game.createEntity(Type, {
-            tileX: x,
-            tileY: y
-          });
-        }
+        return this._createEdgeSafeEntity(level, Type, x, y);
       });
     });
 
     // Create entities from objects
     level.objects.forEach((obj) => {
       this.game.createEntity(obj.Type, {
+        // Tiled objects give x, y from bottom left:
+        // https://github.com/bjorn/tiled/issues/91
         center: {
-          x: obj.x,
-          y: obj.y
-        }
+          x: obj.x + this.game.tileWidth / 2,
+          y: obj.y - this.game.tileHeight / 2
+        },
+        world: this
       });
     });
   }

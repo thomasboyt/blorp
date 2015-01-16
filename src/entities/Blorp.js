@@ -1,7 +1,7 @@
 /* @flow */
 
 var Entity = require('./Entity');
-var Block = require('./Block');
+var Block = require('./tiles/Block');
 var Player = require('./Player');
 var Coquette = require('coquette');
 var rectangleIntersection = require('../lib/math').rectangleIntersection;
@@ -28,7 +28,7 @@ class Blorp extends Entity {
     this.grounded = true;
     this.walkingRight = false;
 
-    var sheet = new SpriteSheet(this.game.assets.images.blorpSheet, this.size.y);
+    var sheet = new SpriteSheet(this.game.assets.images.blorpSheet, this.size.x, this.size.y);
 
     this.anim = new AnimationManager('stand', {
       stand: {

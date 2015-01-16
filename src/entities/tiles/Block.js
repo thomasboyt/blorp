@@ -1,6 +1,6 @@
 /* @flow */
 
-var TileEntity = require('./TileEntity');
+var TileEntity = require('../TileEntity');
 
 class Block extends TileEntity {
   img: Image;

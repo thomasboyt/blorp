@@ -3,7 +3,8 @@
 var Entity = require('./entities/Entity');
 
 var ENTITY_TYPES = {
-  'Block': require('./entities/Block'),
+  'Block': require('./entities/tiles/Block'),
+  'Ladder': require('./entities/tiles/Ladder'),
   'Player': require('./entities/Player'),
   'Blorp': require('./entities/Blorp')
 };
@@ -28,9 +29,15 @@ class Level {
     this.objects = this._parseObjects(doc);
   }
 
-  getEntityTypeForTile(tileNum: number): Entity {
+  getEntityTypeForTile(tileNum: number): any {
     var entityName = this.tileNames[tileNum - 1];
     return this._getEntityForName(entityName);
+  }
+
+  getEntityTypeForTileCoordinates(x: number, y: number): any {
+    var tile = this.tileMap[y][x];
+    if (tile === 0) { return null; }
+    return this.getEntityTypeForTile(tile);
   }
 
   _parseTileset(doc: Document): TileIndexEntityMap {
