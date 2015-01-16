@@ -1,14 +1,13 @@
 /* @flow */
 
 var Entity = require('./Entity');
-var TileEntity = require('./TileEntity');
 var Block = require('./Block');
 var Coquette = require('coquette');
 var rectangleIntersection = require('../lib/math').rectangleIntersection;
 var SpriteSheet = require('../lib/SpriteSheet');
 var AnimationManager = require('../lib/AnimationManager');
 
-class Player extends TileEntity {
+class Player extends Entity {
   img: Image;
   anim: AnimationManager;
 
@@ -21,14 +20,14 @@ class Player extends TileEntity {
   };
 
   init(settings: any) {
+    this.center = settings.center;
     this.size = {x: 11, y: 20};
     this.vec = {x: 0, y: 0};
+
     this.grounded = true;
-
-    this.center = this.getCenter(settings.tileX, settings.tileY);
-    var sheet = new SpriteSheet(this.game.assets.images.playerSheet, this.game.tileWidth);
-
     this.facingLeft = false;
+
+    var sheet = new SpriteSheet(this.game.assets.images.playerSheet, this.game.tileWidth);
 
     this.anim = new AnimationManager('stand', {
       stand: {

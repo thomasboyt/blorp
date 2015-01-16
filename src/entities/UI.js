@@ -7,8 +7,10 @@ var Entity = require('./Entity');
 var AvgTick = require('../lib/AvgTick');
 
 class UI extends Entity {
+  avgTick: AvgTick;
+
   init(settings: any) {
-    this.zindex = -1;
+    this.zindex = 1;
     this.avgTick = new AvgTick(100);
   }
 
@@ -58,6 +60,14 @@ class UI extends Entity {
   draw(ctx: any) {
     ctx.fillStyle = 'white';
     ctx.strokeStyle = 'white';
+
+    var viewCenter = this.game.c.renderer.getViewCenter();
+    var viewTranslate = {
+      x: (viewCenter.x - this.game.width / 2),
+      y: (viewCenter.y - this.game.height / 2)
+    };
+
+    ctx.translate(viewTranslate.x, viewTranslate.y);
 
     this._drawFps(ctx);
 

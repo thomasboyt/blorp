@@ -8,6 +8,7 @@ var Level = require('../Level');
 class World extends Entity {
   width: number;
   height: number;
+  camY: number;
 
   init(settings: any) {
     var level: Level = settings.level;
@@ -54,6 +55,8 @@ class World extends Entity {
   }
 
   _createEntities(level: Level) {
+    // Create entiies from tiles
+
     level.tileMap.forEach((row, y) => {
       row.forEach((tile, x) => {
         if (tile === 0) { return; }
@@ -67,6 +70,16 @@ class World extends Entity {
             tileX: x,
             tileY: y
           });
+        }
+      });
+    });
+
+    // Create entities from objects
+    level.objects.forEach((obj) => {
+      this.game.createEntity(obj.Type, {
+        center: {
+          x: obj.x,
+          y: obj.y
         }
       });
     });

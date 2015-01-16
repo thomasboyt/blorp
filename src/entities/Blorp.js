@@ -1,7 +1,6 @@
 /* @flow */
 
 var Entity = require('./Entity');
-var TileEntity = require('./TileEntity');
 var Block = require('./Block');
 var Player = require('./Player');
 var Coquette = require('coquette');
@@ -9,7 +8,7 @@ var rectangleIntersection = require('../lib/math').rectangleIntersection;
 var SpriteSheet = require('../lib/SpriteSheet');
 var AnimationManager = require('../lib/AnimationManager');
 
-class Blorp extends TileEntity {
+class Blorp extends Entity {
   img: Image;
   anim: AnimationManager;
 
@@ -22,12 +21,13 @@ class Blorp extends TileEntity {
   };
 
   init(settings: any) {
+    this.center = settings.center;
     this.size = {x: 13, y: 13};
     this.vec = {x: 0, y: 0};
+
     this.grounded = true;
     this.walkingRight = false;
 
-    this.center = this.getCenter(settings.tileX, settings.tileY);
     var sheet = new SpriteSheet(this.game.assets.images.blorpSheet, this.size.y);
 
     this.anim = new AnimationManager('stand', {
