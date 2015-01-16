@@ -192,7 +192,7 @@ class Player extends Entity {
 
       if (intersect.w > intersect.h) {
         // do y correction
-        if (intersect.fromAbove) {
+        if (intersect.fromAbove && other.isEdgeCollidable.top) {
 
           this.center.y -= intersect.h;
 
@@ -201,7 +201,7 @@ class Player extends Entity {
             this.grounded = true;
             this.vec.y = 0;
           }
-        } else {
+        } else if (other.isEdgeCollidable.bottom) {
           this.center.y += intersect.h;
           this.vec.y = 0;
         }
