@@ -50,10 +50,10 @@ class World extends Entity {
       tileY: y,
 
       isEdgeCollidable: {
-        top: tAbove === null,
-        bottom: tBelow === null,
-        left: tLeft === null,
-        right: tRight === null
+        top: tAbove !== Type,
+        bottom: tBelow !== Type,
+        left: tLeft !== Type,
+        right: tRight !== Type
       }
     });
   }
