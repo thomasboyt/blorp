@@ -69,96 +69,111 @@ class Player extends Entity {
     });
   }
 
-  update(dt: number) {
-    var step = dt/100;
-
-    var spd = this.game.config.playerSpeed * step;
-
-    this.vec.x = 0;
-
-    if (this.state === WALK_STATE) {
-
-      if (this.game.c.inputter.isDown(this.game.c.inputter.LEFT_ARROW)) {
-        this.vec.x = -spd;
-        this.facingLeft = true;
-      } else if (this.game.c.inputter.isDown(this.game.c.inputter.RIGHT_ARROW)) {
-        this.vec.x = spd;
-        this.facingLeft = false;
-      }
-
-      if (this.game.c.inputter.isPressed(this.game.c.inputter.UP_ARROW)) {
-        if (this.grounded) {
-          var behind = this.world.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
-          if (behind instanceof Ladder) {
-            this._enterLadder(behind);
-          } else {
-            this.jump();
-          }
-        }
-      }
-
-      this.vec.y += this.game.config.gravityAccel;
-
-      this.center.x += this.vec.x;
-      this.center.y += this.vec.y * step;
-
-      if (this.vec.x && this.grounded) {
-        this.anim.set('walk');
-      } else {
-        this.anim.set('stand');
-      }
-
-    } else if (this.state === LADDER_STATE) {
-
-      this.vec.y = 0;
-
-      if (this.game.c.inputter.isDown(this.game.c.inputter.LEFT_ARROW)) {
-        // fall left
-      } else if (this.game.c.inputter.isDown(this.game.c.inputter.RIGHT_ARROW)) {
-        // fall right
-      }
-
-      if (this.game.c.inputter.isDown(this.game.c.inputter.UP_ARROW)) {
-        // climb
-        this.vec.y -= this.game.config.climbSpeed;
-      } else if (this.game.c.inputter.isDown(this.game.c.inputter.DOWN_ARROW)) {
-        // descend
-        this.vec.y += this.game.config.climbSpeed;
-      }
-
-      this.center.x += this.vec.x;
-      this.center.y += this.vec.y * step;
-
-      if (!this._checkOnLadder()) {
-        this._exitLadder();
-      }
-
-      if (this.vec.y) {
-        this.anim.set('climb');
-      } else {
-        this.anim.set('idleLadder');
-      }
-    }
-
-    this.anim.update(dt);
-  }
-
   jump() {
     this.vec.y = -this.game.config.jumpSpeed;
     this.grounded = false;
   }
 
-  _enterLadder(ladder) {
+  update(dt: number) {
+    if (this.state === WALK_STATE) {
+      this._updateWalking(dt);
+    } else if (this.state === LADDER_STATE) {
+      this._updateOnLadder(dt);
+    }
+
+    this.anim.update(dt);
+  }
+
+  _updateWalking(dt: number) {
+    var step = dt/100;
+
+    // Zero out x velocity, since it doesn't have any form of (de)acceleration
+    this.vec.x = 0;
+
+    // Up button has several meanings depending on context (what you're standing in front of)
+    if (this.game.c.inputter.isPressed(this.game.c.inputter.UP_ARROW)) {
+      if (this.grounded) {
+        var tile = this.world.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
+
+        if (tile instanceof Ladder) {
+          this._enterLadder(dt, tile);
+          return;
+        } else {
+          this.jump();
+        }
+      }
+    }
+
+    // Handle left/right movement
+    var spd = this.game.config.playerSpeed ;
+
+    if (this.game.c.inputter.isDown(this.game.c.inputter.LEFT_ARROW)) {
+      this.vec.x = -spd;
+      this.facingLeft = true;
+    } else if (this.game.c.inputter.isDown(this.game.c.inputter.RIGHT_ARROW)) {
+      this.vec.x = spd;
+      this.facingLeft = false;
+    }
+
+    this.vec.y += this.game.config.gravityAccel;
+
+    this.center.x += this.vec.x * step;
+    this.center.y += this.vec.y * step;
+
+    if (this.vec.x && this.grounded) {
+      this.anim.set('walk');
+    } else {
+      this.anim.set('stand');
+    }
+  }
+
+  _updateOnLadder(dt: number) {
+    var step = dt/100;
+
+    if (this.game.c.inputter.isDown(this.game.c.inputter.LEFT_ARROW)) {
+      // TODO: fall left
+    } else if (this.game.c.inputter.isDown(this.game.c.inputter.RIGHT_ARROW)) {
+      // TODO: fall right
+    }
+
+    this.vec.y = 0;
+
+    if (this.game.c.inputter.isDown(this.game.c.inputter.UP_ARROW)) {
+      // climb
+      this.vec.y -= this.game.config.climbSpeed;
+    } else if (this.game.c.inputter.isDown(this.game.c.inputter.DOWN_ARROW)) {
+      // descend
+      this.vec.y += this.game.config.climbSpeed;
+    }
+
+    this.center.y += this.vec.y * step;
+
+    if (!this._checkOnLadder()) {
+      this._exitLadder(dt);
+      return;
+    }
+
+    if (this.vec.y) {
+      this.anim.set('climb');
+    } else {
+      this.anim.set('idleLadder');
+    }
+  }
+
+  _enterLadder(dt: number, ladder: Ladder) {
     this.state = LADDER_STATE;
     this.vec.x = 0;
     this.vec.y = 0;
 
     this.center.x = ladder.center.x;
     this.center.y = ladder.center.y;
+
+    this._updateOnLadder(dt);
   }
 
-  _exitLadder() {
+  _exitLadder(dt: number) {
     this.state = WALK_STATE;
+    this._updateWalking(dt);
   }
 
   _checkOnLadder(): boolean {
@@ -196,40 +211,47 @@ class Player extends Entity {
     var intersect;
 
     if (this.state === WALK_STATE) {
+
       if (other instanceof Block) {
         intersect = rectangleIntersection(this, other);
 
         if (intersect.w > intersect.h) {
-          // do y correction
-          if (intersect.fromAbove && other.isEdgeCollidable.top) {
 
+          // Player is falling into a block from above
+          if (intersect.fromAbove && other.isEdgeCollidable.top) {
             this.center.y -= intersect.h;
 
+            // Zero out player velocity when they hit the block, and set grounded
             if (this.vec.y > 0) {
               this.grounded = true;
               this.vec.y = 0;
             }
+
+          // Player is rising into a block from below
           } else if (other.isEdgeCollidable.bottom) {
             this.center.y += intersect.h;
 
+            // Zero out player velocity when they bump their head
             if (this.vec.y < 0) {
               this.vec.y = 0;
             }
           }
+
         } else {
-          // do x correction
+          // Player is colliding with the block from the left
           if (intersect.fromLeft && other.isEdgeCollidable.left) {
             this.center.x -= intersect.w;
+
+          // Player is colliding with the block from the right
           } else if (other.isEdgeCollidable.right) {
             this.center.x += intersect.w;
           }
-          this.vec.x = 0;
         }
 
       } else if (other instanceof Platform) {
         intersect = rectangleIntersection(this, other);
 
-        // Ladders can be stood upon
+        // Platforms can only be collided with from the top
         if (intersect.w > intersect.h && intersect.fromAbove && other.isEdgeCollidable.top) {
           this.center.y -= intersect.h;
           this.vec.y = 0;
