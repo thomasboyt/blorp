@@ -5,11 +5,16 @@ var Player = require('./Player');
 var Block = require('./tiles/Block');
 var Level = require('../Level');
 
+// TIL flow will not parse 3D arrays
+type Tiles = Array<Array<?Entity>>;  // </>
+type TileLayers = Array<Tiles>;  // </>
+
 class World extends Entity {
   width: number;
   height: number;
   camY: number;
   level: Level;
+  tileLayers: TileLayers;
 
   init(settings: any) {
     var level = this.level = settings.level;
@@ -21,9 +26,9 @@ class World extends Entity {
     this.camY = this.game.height / 2;
   }
 
-  getTileAt(layer: number, center: Coordinates): Entity {
-    var row = Math.floor(center.y / this.game.tileHeight);
-    var col = Math.floor(center.x / this.game.tileWidth);
+  getTileAt(layer: number, x: number, y: number): ?Entity {
+    var row = Math.floor(y / this.game.tileHeight);
+    var col = Math.floor(x / this.game.tileWidth);
 
     return this.tileLayers[layer][row][col];
   }
@@ -64,7 +69,7 @@ class World extends Entity {
     this.tileLayers = level.tileLayers.map((layer, layerIdx) => {
       return layer.map((row, y) => {
         return row.map((tile, x) => {
-          if (tile === 0) { return; }
+          if (tile === 0) { return null; }
 
           var Type = level.getEntityTypeForTile(tile);
 

@@ -1,9 +1,11 @@
 /* @flow */
 
 var Entity = require('./Entity');
+var World = require('./World');
 var Block = require('./tiles/Block');
 var Ladder = require('./tiles/Ladder');
 var Platform = require('./tiles/Platform');
+
 var rectangleIntersection = require('../lib/math').rectangleIntersection;
 var SpriteSheet = require('../lib/SpriteSheet');
 var AnimationManager = require('../lib/AnimationManager');
@@ -14,6 +16,7 @@ var LADDER_STATE = 'ladder';
 class Player extends Entity {
   img: Image;
   anim: AnimationManager;
+  world: World;
 
   grounded: boolean;
   facingLeft: boolean;
@@ -83,7 +86,7 @@ class Player extends Entity {
 
       if (this.game.c.inputter.isPressed(this.game.c.inputter.UP_ARROW)) {
         if (this.grounded) {
-          var behind = this.world.getTileAt(Ladder.layerNum, this.center);
+          var behind = this.world.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
           if (behind instanceof Ladder) {
             this._enterLadder(behind);
           } else {
@@ -169,7 +172,7 @@ class Player extends Entity {
       y = this.center.y;
     }
 
-    var tile = this.world.getTileAt(Ladder.layerNum, {x: this.center.x, y: y});
+    var tile = this.world.getTileAt(Ladder.layerNum, this.center.x, y);
     return tile instanceof Ladder;
   }
 

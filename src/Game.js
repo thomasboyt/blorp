@@ -20,9 +20,9 @@ var Player = require('./entities/Player');
 var Level = require('./Level');
 
 type AssetMap = {
-  images: {
-    [key: string]: Image;
-  };
+  // TODO: this makes me sad but I don't know how to make it better
+  images: any;
+
   audio: {
     [key:string]: ArrayBuffer;
   };

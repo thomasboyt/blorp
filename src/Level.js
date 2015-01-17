@@ -11,7 +11,7 @@ var ENTITY_TYPES = {
 };
 
 type TileIndexEntityMap = {
-  [key:number]: Entity
+  [key:number]: string
 };
 
 type TileMap = Array<Array<number>>;  // </>
@@ -88,7 +88,7 @@ class Level {
     });
   }
 
-  _getEntityForName(name: string) {
+  _getEntityForName(name: string): any {
     var Type = ENTITY_TYPES[name];
 
     if (!Type) {

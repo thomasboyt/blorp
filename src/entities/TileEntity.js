@@ -8,6 +8,8 @@ type Coordinates = {
 };
 
 class TileEntity extends Entity {
+  layerNum: number;
+
   getCenter(tileX: number, tileY: number): Coordinates {
     var tileH = this.game.tileHeight;
     var tileW = this.game.tileWidth;

@@ -18,7 +18,7 @@ class Animation {
   update(dt: number) {
     this._elapsed += dt;
 
-    if (this._frameLengthMs === null) {
+    if (this._frameLengthMs === null || this._frameLengthMs === undefined) {
       return;
     }
 

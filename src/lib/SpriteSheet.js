@@ -4,7 +4,8 @@ var Sprite = require('./Sprite');
 
 class SpriteSheet {
   img: Image;
-  xOffset: number;
+  spriteWidth: number;
+  spriteHeight: number;
 
   constructor(img: Image, spriteWidth: number, spriteHeight: number) {
     this.img = img;
