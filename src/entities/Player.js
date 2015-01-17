@@ -143,13 +143,14 @@ class Player extends Entity {
   _updateOnLadder(dt: number) {
     var step = dt/100;
 
-    if (this.game.c.inputter.isPressed(this.game.c.inputter.LEFT_ARROW) ||
-        this.game.c.inputter.isPressed(this.game.c.inputter.RIGHT_ARROW)) {
-      if (this._canExitLadder()) {
-        this._exitLadder(dt);
-        return;
-      }
-    }
+    // TODO: left/right exits off ladders have been disabled until collision detection is better
+    // if (this.game.c.inputter.isPressed(this.game.c.inputter.LEFT_ARROW) ||
+    //     this.game.c.inputter.isPressed(this.game.c.inputter.RIGHT_ARROW)) {
+    //   if (this._canExitLadder()) {
+    //     this._exitLadder(dt);
+    //     return;
+    //   }
+    // }
 
     this.vec.y = 0;
 
@@ -173,14 +174,6 @@ class Player extends Entity {
     } else {
       this.anim.set('idleLadder');
     }
-  }
-
-  _canExitLadder(): boolean {
-    // This is a shitty hack to fix https://github.com/thomasboyt/blorp/issues/11
-
-    var tileBehind = this.world.getTileAt(0, this.center.x, this.center.y);
-
-    return !(tileBehind instanceof Block || tileBehind instanceof Platform);
   }
 
   _enterLadder(dt: number, ladder: Ladder, fromAbove: ?boolean) {
