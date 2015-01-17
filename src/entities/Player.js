@@ -1,7 +1,6 @@
 /* @flow */
 
 var Entity = require('./Entity');
-var World = require('./World');
 var Block = require('./tiles/Block');
 var Ladder = require('./tiles/Ladder');
 var Platform = require('./tiles/Platform');
@@ -16,7 +15,10 @@ var LADDER_STATE = 'ladder';
 class Player extends Entity {
   img: Image;
   anim: AnimationManager;
-  world: World;
+
+  // TODO: This causes a breaking circular dependency
+  // world: World;
+  world: any;
 
   grounded: boolean;
   facingLeft: boolean;
