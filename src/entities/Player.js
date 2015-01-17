@@ -196,14 +196,16 @@ class Player extends Entity {
 
           this.center.y -= intersect.h;
 
-          // prevent "sticky corners" while ascending
           if (this.vec.y > 0) {
             this.grounded = true;
             this.vec.y = 0;
           }
         } else if (other.isEdgeCollidable.bottom) {
           this.center.y += intersect.h;
-          this.vec.y = 0;
+
+          if (this.vec.y < 0) {
+            this.vec.y = 0;
+          }
         }
       } else {
         // do x correction
