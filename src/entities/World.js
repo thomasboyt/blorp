@@ -92,7 +92,7 @@ class World extends Entity {
     });
   }
 
-  draw(ctx: any) {
+  _updateCamera() {
     // camY only moves if player is >1/5 screen px above/below it
     var threshold = this.game.height/5;
 
@@ -111,6 +111,10 @@ class World extends Entity {
       x: player.center.x,
       y: this.camY
     });
+  }
+
+  update(dt: number) {
+    this._updateCamera();
   }
 }
 
