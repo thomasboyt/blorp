@@ -37,7 +37,6 @@ class Player extends Entity {
     this.world = settings.world;
     this.state = WALK_STATE;
 
-    this.grounded = true;
     this.facingLeft = false;
 
     var sheet = new SpriteSheet(this.game.assets.images.playerSheet, this.game.tileWidth, this.game.tileHeight);
@@ -71,7 +70,6 @@ class Player extends Entity {
 
   jump() {
     this.vec.y = -this.game.config.jumpSpeed;
-    this.grounded = false;
   }
 
   update(dt: number) {
@@ -87,19 +85,32 @@ class Player extends Entity {
   _updateWalking(dt: number) {
     var step = dt/100;
 
+    // TODO: Does this allow you to double jump if you jump at the peak of an arc?
+    var grounded = this.vec.y === 0;
+
     // Zero out x velocity, since it doesn't have any form of (de)acceleration
     this.vec.x = 0;
 
     // Up button has several meanings depending on context (what you're standing in front of)
     if (this.game.c.inputter.isPressed(this.game.c.inputter.UP_ARROW)) {
-      if (this.grounded) {
-        var tile = this.world.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
+      var tileBehind = this.world.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
 
-        if (tile instanceof Ladder) {
-          this._enterLadder(dt, tile);
+      if (tileBehind instanceof Ladder) {
+        this._enterLadder(dt, tileBehind);
+        return;
+      } else if (grounded) {
+        this.jump();
+      }
+    }
+
+    if (this.game.c.inputter.isPressed(this.game.c.inputter.DOWN_ARROW)) {
+      if (grounded) {
+        var yBelow = this.center.y + this.game.tileHeight;
+        var tileBelow = this.world.getTileAt(Ladder.layerNum, this.center.x, yBelow);
+
+        if (tileBelow instanceof Ladder) {
+          this._enterLadder(dt, tileBelow, true);
           return;
-        } else {
-          this.jump();
         }
       }
     }
@@ -120,7 +131,7 @@ class Player extends Entity {
     this.center.x += this.vec.x * step;
     this.center.y += this.vec.y * step;
 
-    if (this.vec.x && this.grounded) {
+    if (this.vec.x && grounded) {
       this.anim.set('walk');
     } else {
       this.anim.set('stand');
@@ -160,13 +171,18 @@ class Player extends Entity {
     }
   }
 
-  _enterLadder(dt: number, ladder: Ladder) {
+  _enterLadder(dt: number, ladder: Ladder, fromAbove: ?boolean) {
     this.state = LADDER_STATE;
     this.vec.x = 0;
     this.vec.y = 0;
 
     this.center.x = ladder.center.x;
-    this.center.y = ladder.center.y;
+
+    if (fromAbove) {
+      this.center.y = this.center.y + 12;
+    } else {
+      this.center.y = ladder.center.y;
+    }
 
     this._updateOnLadder(dt);
   }
@@ -177,19 +193,10 @@ class Player extends Entity {
   }
 
   _checkOnLadder(): boolean {
-    var y;
-
-    if (this.vec.y < 0) {
-      // We're climbing, so check if the bottom edge of the player is on a ladder
-      y = this.center.y + this.size.y / 2;
-    } else if (this.vec.y > 0) {
-      // We're descending, so check if the top edge of the player is on a ladder
-      y = this.center.y - this.size.y / 2;
-    } else {
-      y = this.center.y;
-    }
-
+    // Check that player's bottom edge is on a ladder
+    var y = this.center.y + this.size.y / 2;
     var tile = this.world.getTileAt(Ladder.layerNum, this.center.x, y);
+
     return tile instanceof Ladder;
   }
 
@@ -223,7 +230,6 @@ class Player extends Entity {
 
             // Zero out player velocity when they hit the block, and set grounded
             if (this.vec.y > 0) {
-              this.grounded = true;
               this.vec.y = 0;
             }
 
@@ -255,7 +261,6 @@ class Player extends Entity {
         if (intersect.w > intersect.h && intersect.fromAbove && other.isEdgeCollidable.top) {
           this.center.y -= intersect.h;
           this.vec.y = 0;
-          this.grounded = true;
         }
       }
     }
