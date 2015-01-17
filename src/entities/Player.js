@@ -34,6 +34,8 @@ class Player extends Entity {
     this.center = settings.center;
     this.size = {x: 11, y: 20};
     this.vec = {x: 0, y: 0};
+    this.zindex = 100;
+
     this.world = settings.world;
     this.state = WALK_STATE;
 
@@ -141,10 +143,12 @@ class Player extends Entity {
   _updateOnLadder(dt: number) {
     var step = dt/100;
 
-    if (this.game.c.inputter.isDown(this.game.c.inputter.LEFT_ARROW)) {
-      // TODO: fall left
-    } else if (this.game.c.inputter.isDown(this.game.c.inputter.RIGHT_ARROW)) {
-      // TODO: fall right
+    if (this.game.c.inputter.isPressed(this.game.c.inputter.LEFT_ARROW)) {
+      this._exitLadder(dt);
+      return;
+    } else if (this.game.c.inputter.isPressed(this.game.c.inputter.RIGHT_ARROW)) {
+      this._exitLadder(dt);
+      return;
     }
 
     this.vec.y = 0;

@@ -18,9 +18,10 @@ class Ladder extends TileEntity {
     };
 
     this.layerNum = settings.layerNum;
+    this.zindex = this.layerNum;
+
     this.center = this.getCenter(settings.tileX, settings.tileY);
     this.img = this.game.assets.images.ladder;
-    this.zindex = -1;
     this.isEdgeCollidable = settings.isEdgeCollidable;
   }
 

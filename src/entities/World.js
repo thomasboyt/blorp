@@ -38,6 +38,9 @@ class World extends Entity {
    * or not they have an adjacent entity on a given side. This prevents collision detection from
    * firing on "seams" between entities, which causes lots of weird issues.
    *
+   * TODO: currently this just looks for any tile on any side to exist within the same layer. This
+   * works, but could get nasty if e.g. more tile types are added to the ladder layer.
+   *
    * More info: http://gamedev.stackexchange.com/a/29037
    */
   _createEdgeSafeEntity(level: Level, layerIdx: number, Type: any, x: number, y: number): Entity {

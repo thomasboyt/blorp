@@ -24,6 +24,7 @@ class Blorp extends Entity {
     this.center = settings.center;
     this.size = {x: 13, y: 13};
     this.vec = {x: 0, y: 0};
+    this.zindex = 100;
 
     this.grounded = true;
     this.walkingRight = false;

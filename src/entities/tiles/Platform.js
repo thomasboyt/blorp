@@ -18,6 +18,8 @@ class Platform extends TileEntity {
     };
 
     this.layerNum = settings.layerNum;
+    this.zindex = this.layerNum;
+
     this.center = this.getCenter(settings.tileX, settings.tileY);
     this.img = this.game.assets.images.platform;
     this.isEdgeCollidable = settings.isEdgeCollidable;

@@ -18,6 +18,8 @@ class Block extends TileEntity {
     };
 
     this.layerNum = settings.layerNum;
+    this.zindex = this.layerNum;
+
     this.center = this.getCenter(settings.tileX, settings.tileY);
     this.img = this.game.assets.images.block;
     this.isEdgeCollidable = settings.isEdgeCollidable;
