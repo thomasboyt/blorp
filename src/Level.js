@@ -4,6 +4,7 @@ var Entity = require('./entities/Entity');
 
 var ENTITY_TYPES = {
   'Block': require('./entities/tiles/Block'),
+  'Platform': require('./entities/tiles/Platform'),
   'Ladder': require('./entities/tiles/Ladder'),
   'Player': require('./entities/Player'),
   'Blorp': require('./entities/Blorp')
@@ -17,7 +18,7 @@ type TileMap = Array<Array<number>>;  // </>
 
 class Level {
   tileNames: TileIndexEntityMap;
-  tileMap: TileMap;
+  tileLayers: Array<TileMap>;  // </>
   objects: Array<Object>; // </>
 
   constructor(level: string) {
@@ -25,8 +26,16 @@ class Level {
     var doc = parser.parseFromString(level, 'application/xml');
 
     this.tileNames = this._parseTileset(doc);
-    this.tileMap = this._parseTileMap(doc);
+    this.tileLayers = this._parseTileLayers(doc);
     this.objects = this._parseObjects(doc);
+  }
+
+  getWidth(): number {
+    return this.tileLayers[0][0].length;
+  }
+
+  getHeight(): number {
+    return this.tileLayers[0].length;
   }
 
   getEntityTypeForTile(tileNum: number): any {
@@ -34,8 +43,8 @@ class Level {
     return this._getEntityForName(entityName);
   }
 
-  getEntityTypeForTileCoordinates(x: number, y: number): any {
-    var tile = this.tileMap[y][x];
+  getEntityTypeForTileCoordinates(layer: number, x: number, y: number): any {
+    var tile = this.tileLayers[layer][y][x];
     if (tile === 0) { return null; }
     return this.getEntityTypeForTile(tile);
   }
@@ -53,16 +62,18 @@ class Level {
     return tileNames;
   }
 
-  _parseTileMap(doc: Document): TileMap {
-    // TODO: handle >1 tile layer?
+  _parseTileLayers(doc: Document): Array<TileMap> {  // </>
+    var layers = doc.querySelectorAll('layer data');
 
-    var csv = doc.querySelector('layer data').textContent;
+    return Array.prototype.map.call(layers, (layer) => {
+      var csv = layer.textContent;
 
-    // Parse CSV into a 2D array (row -> col)
-    return csv.trim()
-              .split(',\n')
-              .map((row) => row.split(',')
-                               .map((tile) => parseInt(tile, 10)));
+      // Parse CSV into a 2D array (row -> col)
+      return csv.trim()
+                .split(',\n')
+                .map((row) => row.split(',')
+                                 .map((tile) => parseInt(tile, 10)));
+    });
   }
 
   _parseObjects(doc: Document): Array<Object> {  // </>

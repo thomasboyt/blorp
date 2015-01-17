@@ -3,6 +3,7 @@
 var Entity = require('./Entity');
 var Block = require('./tiles/Block');
 var Ladder = require('./tiles/Ladder');
+var Platform = require('./tiles/Platform');
 var rectangleIntersection = require('../lib/math').rectangleIntersection;
 var SpriteSheet = require('../lib/SpriteSheet');
 var AnimationManager = require('../lib/AnimationManager');
@@ -82,7 +83,7 @@ class Player extends Entity {
 
       if (this.game.c.inputter.isPressed(this.game.c.inputter.UP_ARROW)) {
         if (this.grounded) {
-          var behind = this.world.getTileAt(this.center);
+          var behind = this.world.getTileAt(Ladder.layerNum, this.center);
           if (behind instanceof Ladder) {
             this._enterLadder(behind);
           } else {
@@ -168,7 +169,7 @@ class Player extends Entity {
       y = this.center.y;
     }
 
-    var tile = this.world.getTileAt({x: this.center.x, y: y});
+    var tile = this.world.getTileAt(Ladder.layerNum, {x: this.center.x, y: y});
     return tile instanceof Ladder;
   }
 
@@ -187,40 +188,41 @@ class Player extends Entity {
   }
 
   collision(other: Entity) {
-    if (other instanceof Block) {
-      var intersect = rectangleIntersection(this, other);
+    var intersect;
 
-      if (intersect.w > intersect.h) {
-        // do y correction
-        if (intersect.fromAbove && other.isEdgeCollidable.top) {
+    if (this.state === WALK_STATE) {
+      if (other instanceof Block) {
+        intersect = rectangleIntersection(this, other);
 
-          this.center.y -= intersect.h;
+        if (intersect.w > intersect.h) {
+          // do y correction
+          if (intersect.fromAbove && other.isEdgeCollidable.top) {
 
-          if (this.vec.y > 0) {
-            this.grounded = true;
-            this.vec.y = 0;
+            this.center.y -= intersect.h;
+
+            if (this.vec.y > 0) {
+              this.grounded = true;
+              this.vec.y = 0;
+            }
+          } else if (other.isEdgeCollidable.bottom) {
+            this.center.y += intersect.h;
+
+            if (this.vec.y < 0) {
+              this.vec.y = 0;
+            }
           }
-        } else if (other.isEdgeCollidable.bottom) {
-          this.center.y += intersect.h;
-
-          if (this.vec.y < 0) {
-            this.vec.y = 0;
+        } else {
+          // do x correction
+          if (intersect.fromLeft && other.isEdgeCollidable.left) {
+            this.center.x -= intersect.w;
+          } else if (other.isEdgeCollidable.right) {
+            this.center.x += intersect.w;
           }
+          this.vec.x = 0;
         }
-      } else {
-        // do x correction
-        if (intersect.fromLeft && other.isEdgeCollidable.left) {
-          this.center.x -= intersect.w;
-        } else if (other.isEdgeCollidable.right) {
-          this.center.x += intersect.w;
-        }
-        this.vec.x = 0;
-      }
-    }
 
-    if (this.state !== LADDER_STATE) {
-      if (other instanceof Ladder) {
-        var intersect = rectangleIntersection(this, other);
+      } else if (other instanceof Platform) {
+        intersect = rectangleIntersection(this, other);
 
         // Ladders can be stood upon
         if (intersect.w > intersect.h && intersect.fromAbove && other.isEdgeCollidable.top) {

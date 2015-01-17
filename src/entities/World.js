@@ -15,17 +15,17 @@ class World extends Entity {
     var level = this.level = settings.level;
     this._createEntities(level);
 
-    this.width = level.tileMap[0].length * this.game.tileWidth;
-    this.height = level.tileMap.length * this.game.tileHeight;
+    this.width = level.getWidth() * this.game.tileWidth;
+    this.height = level.getHeight() * this.game.tileHeight;
 
     this.camY = this.game.height / 2;
   }
 
-  getTileAt(center: Coordinates): Entity {
+  getTileAt(layer: number, center: Coordinates): Entity {
     var row = Math.floor(center.y / this.game.tileHeight);
     var col = Math.floor(center.x / this.game.tileWidth);
 
-    return this.tiles[row][col];
+    return this.tileLayers[layer][row][col];
   }
 
   /*
@@ -35,25 +35,25 @@ class World extends Entity {
    *
    * More info: http://gamedev.stackexchange.com/a/29037
    */
-  _createEdgeSafeEntity(level: Level, Type: any, x: number, y: number): Entity {
-    var row = level.tileMap[y];
+  _createEdgeSafeEntity(level: Level, layerIdx: number, Type: any, x: number, y: number): Entity {
 
-    var getType = level.getEntityTypeForTileCoordinates.bind(level);
+    var getType = level.getEntityTypeForTileCoordinates.bind(level, layerIdx);
 
     var tAbove = y > 0 ? getType(x, y-1)  : null;
-    var tBelow = y < level.tileMap.length - 1 ? getType(x, y+1) : null;
+    var tBelow = y < level.getWidth() - 1 ? getType(x, y+1) : null;
     var tLeft = x > 0 ? getType(x-1, y) : null;
-    var tRight = x < row.length - 1 ? getType(x+1, y) : null;
+    var tRight = x < level.getHeight() - 1 ? getType(x+1, y) : null;
 
     return this.game.createEntity(Type, {
       tileX: x,
       tileY: y,
+      layerNum: layerIdx,
 
       isEdgeCollidable: {
-        top: tAbove !== Type,
-        bottom: tBelow !== Type,
-        left: tLeft !== Type,
-        right: tRight !== Type
+        top: tAbove === null,
+        bottom: tBelow === null,
+        left: tLeft === null,
+        right: tRight === null
       }
     });
   }
@@ -61,13 +61,15 @@ class World extends Entity {
   _createEntities(level: Level) {
     // Create entiies from tiles
 
-    this.tiles = level.tileMap.map((row, y) => {
-      return row.map((tile, x) => {
-        if (tile === 0) { return; }
+    this.tileLayers = level.tileLayers.map((layer, layerIdx) => {
+      return layer.map((row, y) => {
+        return row.map((tile, x) => {
+          if (tile === 0) { return; }
 
-        var Type = level.getEntityTypeForTile(tile);
+          var Type = level.getEntityTypeForTile(tile);
 
-        return this._createEdgeSafeEntity(level, Type, x, y);
+          return this._createEdgeSafeEntity(level, layerIdx, Type, x, y);
+        });
       });
     });
 

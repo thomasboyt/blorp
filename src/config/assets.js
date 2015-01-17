@@ -10,8 +10,11 @@ module.exports = {
   audio: {
   },
   images: {
+    // TODO: spritesheet these
     'block': require('../../assets/images/block.png'),
+    'platform': require('../../assets/images/platform.png'),
     'ladder': require('../../assets/images/ladder.png'),
+
     'playerSheet': require('../../assets/images/player_sheet.png'),
     'blorpSheet': require('../../assets/images/blorp_sheet.png')
   },

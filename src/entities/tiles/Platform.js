@@ -2,7 +2,7 @@
 
 var TileEntity = require('../TileEntity');
 
-class Block extends TileEntity {
+class Platform extends TileEntity {
   img: Image;
 
   isEdgeCollidable: {
@@ -19,7 +19,7 @@ class Block extends TileEntity {
 
     this.layerNum = settings.layerNum;
     this.center = this.getCenter(settings.tileX, settings.tileY);
-    this.img = this.game.assets.images.block;
+    this.img = this.game.assets.images.platform;
     this.isEdgeCollidable = settings.isEdgeCollidable;
   }
 
@@ -33,4 +33,4 @@ class Block extends TileEntity {
   }
 }
 
-module.exports = Block;
+module.exports = Platform;

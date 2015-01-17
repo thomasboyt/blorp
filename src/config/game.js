@@ -17,7 +17,7 @@ module.exports = {
   blorpSpeed: 3,
 
   playerWalkAnimMs: 200,
-  blorpWalkAnimMs: 200,
+  blorpWalkAnimMs: 200
 };
 
 

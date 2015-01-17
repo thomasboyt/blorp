@@ -2,8 +2,8 @@
 
 var Entity = require('./Entity');
 var Block = require('./tiles/Block');
+var Platform = require('./tiles/Platform');
 var Player = require('./Player');
-var Coquette = require('coquette');
 var rectangleIntersection = require('../lib/math').rectangleIntersection;
 var SpriteSheet = require('../lib/SpriteSheet');
 var AnimationManager = require('../lib/AnimationManager');
@@ -107,6 +107,12 @@ class Blorp extends Entity {
           this.walkingRight = true;
         }
         this.vec.x = 0;
+      }
+    } else if (other instanceof Platform) {
+      if (intersect.w > intersect.h && intersect.fromAbove && other.isEdgeCollidable.top) {
+        this.center.y -= intersect.h;
+        this.vec.y = 0;
+        this.grounded = true;
       }
     }
 

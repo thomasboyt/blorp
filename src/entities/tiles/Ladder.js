@@ -17,6 +17,7 @@ class Ladder extends TileEntity {
       x: 20, y: 20
     };
 
+    this.layerNum = settings.layerNum;
     this.center = this.getCenter(settings.tileX, settings.tileY);
     this.img = this.game.assets.images.ladder;
     this.zindex = -1;
@@ -32,5 +33,7 @@ class Ladder extends TileEntity {
     ctx.drawImage(img, x, y);
   }
 }
+
+Ladder.layerNum = 1;
 
 module.exports = Ladder;
