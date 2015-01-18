@@ -10,7 +10,7 @@
 module.exports = {
   gravityAccel: 0.5,
 
-  playerSpeed: 5,
+  playerSpeed: 6,
   climbSpeed: 5,
   jumpSpeed: 14,
 

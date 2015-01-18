@@ -200,9 +200,12 @@ class Player extends Entity {
   _checkOnLadder(): boolean {
     // Check that player's bottom edge is on a ladder
     var y = this.center.y + this.size.y / 2;
-    var tile = this.world.getTileAt(Ladder.layerNum, this.center.x, y);
+    var bottomEdgeTile = this.world.getTileAt(Ladder.layerNum, this.center.x, y);
 
-    return tile instanceof Ladder;
+    // Check that the player's center is on a ladder
+    var centerTile = this.world.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
+
+    return (bottomEdgeTile instanceof Ladder && centerTile instanceof Ladder);
   }
 
   draw(ctx: any) {

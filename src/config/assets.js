@@ -19,6 +19,7 @@ module.exports = {
     'blorpSheet': require('../../assets/images/blorp_sheet.png')
   },
   levels: {
-    '1-1': require('../../assets/levels/1-1.tmx')
+    '1': require('../../assets/levels/1.tmx'),
+    '2': require('../../assets/levels/2.tmx')
   }
 };

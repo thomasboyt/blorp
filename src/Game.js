@@ -118,7 +118,7 @@ class Game {
     this.fsm.start();
 
     this.createEntity(World, {
-      level: this.assets.levels['1-1']
+      level: this.assets.levels['2']
     });
   }
 
