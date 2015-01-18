@@ -19,6 +19,11 @@ var World = require('./entities/World');
 var Player = require('./entities/Player');
 var Level = require('./Level');
 
+function getParameterByName(name) {
+  var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+  return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
 type AssetMap = {
   // TODO: this makes me sad but I don't know how to make it better
   images: any;
@@ -117,8 +122,10 @@ class Game {
   start() {
     this.fsm.start();
 
+    var level = parseInt(getParameterByName('level') || '1', 10);
+
     this.createEntity(World, {
-      level: this.assets.levels['2']
+      level: this.assets.levels[level]
     });
   }
 
