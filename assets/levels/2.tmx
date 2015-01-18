@@ -106,6 +106,6 @@
   <object id="5" type="Blorp" gid="3" x="265" y="160"/>
   <object id="6" type="Blorp" gid="3" x="265" y="240"/>
   <object id="7" type="Blorp" gid="3" x="305" y="320"/>
-  <object id="8" type="Key" gid="7" x="145" y="375"/>
+  <object id="8" type="Key" gid="7" x="45" y="75"/>
  </objectgroup>
 </map>
