@@ -33,6 +33,18 @@ class World extends Entity {
     return this.tileLayers[layer][row][col];
   }
 
+  destroy() {
+    this.game.c.entities.destroy(this);
+
+    this.tileLayers.forEach((layer) => layer.forEach((row) => row.forEach((tile) => {
+      this.game.c.entities.destroy(tile);
+    })));
+
+    this.objects.forEach((obj) => {
+      this.game.c.entities.destroy(obj);
+    });
+  }
+
   /*
    * This weird-lookin' method sets `isEdgeCollidable` on created entities, which denotes whether
    * or not they have an adjacent entity on a given side. This prevents collision detection from
@@ -82,8 +94,8 @@ class World extends Entity {
     });
 
     // Create entities from objects
-    level.objects.forEach((obj) => {
-      this.game.createEntity(obj.Type, {
+    this.objects = level.objects.map((obj) => {
+      return this.game.createEntity(obj.Type, {
         // Tiled objects give x, y from bottom left:
         // https://github.com/bjorn/tiled/issues/91
         center: {
@@ -100,6 +112,11 @@ class World extends Entity {
     var threshold = this.game.height/5;
 
     var player = this.game.c.entities.all(Player)[0];
+
+    if (!player) {
+      return;
+    }
+
     var diff = this.camY - player.center.y;
 
     if (Math.abs(diff) > threshold) {

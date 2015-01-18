@@ -5,9 +5,12 @@ var Entity = require('./entities/Entity');
 var ENTITY_TYPES = {
   'Block': require('./entities/tiles/Block'),
   'Platform': require('./entities/tiles/Platform'),
+  'LockedBlock': require('./entities/tiles/LockedBlock'),
   'Ladder': require('./entities/tiles/Ladder'),
+  'ExitDoor': require('./entities/tiles/ExitDoor'),
   'Player': require('./entities/Player'),
-  'Blorp': require('./entities/Blorp')
+  'Blorp': require('./entities/Blorp'),
+  'Key': require('./entities/Key'),
 };
 
 type TileIndexEntityMap = {

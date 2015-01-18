@@ -12,8 +12,11 @@ module.exports = {
   images: {
     // TODO: spritesheet these
     'block': require('../../assets/images/block.png'),
+    'lockedBlock': require('../../assets/images/locked_block.png'),
     'platform': require('../../assets/images/platform.png'),
     'ladder': require('../../assets/images/ladder.png'),
+    'key': require('../../assets/images/key.png'),
+    'exitDoor': require('../../assets/images/exit_door.png'),
 
     'playerSheet': require('../../assets/images/player_sheet.png'),
     'blorpSheet': require('../../assets/images/blorp_sheet.png')

@@ -1,18 +1,16 @@
 /* @flow */
 
-var TileEntity = require('../TileEntity');
+var Entity = require('./Entity');
 
-class Block extends TileEntity {
+class Key extends Entity {
   img: Image;
 
   init(settings: any) {
-    this.size = {
-      x: 20, y: 20
-    };
+    this.center = settings.center;
+    this.size = {x: 10, y: 5};
+    this.zindex = 100;
 
-    super(settings);
-
-    this.img = this.game.assets.images.block;
+    this.img = this.game.assets.images.key;
   }
 
   draw(ctx: any) {
@@ -25,4 +23,4 @@ class Block extends TileEntity {
   }
 }
 
-module.exports = Block;
+module.exports = Key;

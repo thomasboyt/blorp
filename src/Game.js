@@ -122,14 +122,20 @@ class Game {
   start() {
     this.fsm.start();
 
-    var level = parseInt(getParameterByName('level') || '1', 10);
+    var level = getParameterByName('level') || '1';
 
-    this.createEntity(World, {
+    this.currentWorld = this.createEntity(World, {
       level: this.assets.levels[level]
     });
   }
 
   end() {
+  }
+
+  finishedLevel() {
+    this.fsm.end();
+
+    this.currentWorld.destroy();
   }
 
 

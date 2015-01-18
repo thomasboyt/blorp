@@ -116,15 +116,6 @@ class Blorp extends Entity {
         this.grounded = true;
       }
     }
-
-    if (other instanceof Player) {
-      if (intersect.w > intersect.h) {
-        if (!intersect.fromAbove) {
-          this.game.c.entities.destroy(this);
-          other.jump();
-        }
-      }
-    }
   }
 }
 

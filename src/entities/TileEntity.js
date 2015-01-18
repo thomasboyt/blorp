@@ -10,7 +10,21 @@ type Coordinates = {
 class TileEntity extends Entity {
   layerNum: number;
 
-  getCenter(tileX: number, tileY: number): Coordinates {
+  isEdgeCollidable: {
+    top: boolean;
+    left: boolean;
+    right: boolean;
+    bottom: boolean;
+  };
+
+  init(settings: any) {
+    this.layerNum = settings.layerNum;
+    this.zindex = this.layerNum;
+    this.center = this._getCenter(settings.tileX, settings.tileY);
+    this.isEdgeCollidable = settings.isEdgeCollidable;
+  }
+
+  _getCenter(tileX: number, tileY: number): Coordinates {
     var tileH = this.game.tileHeight;
     var tileW = this.game.tileWidth;
 

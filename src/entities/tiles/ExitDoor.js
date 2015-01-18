@@ -2,17 +2,17 @@
 
 var TileEntity = require('../TileEntity');
 
-class Ladder extends TileEntity {
+class ExitDoor extends TileEntity {
   img: Image;
 
   init(settings: any) {
     this.size = {
-      x: 20, y: 20
+      x: 12, y: 20
     };
 
     super(settings);
 
-    this.img = this.game.assets.images.ladder;
+    this.img = this.game.assets.images.exitDoor;
   }
 
   draw(ctx: any) {
@@ -25,6 +25,6 @@ class Ladder extends TileEntity {
   }
 }
 
-Ladder.layerNum = 1;
+ExitDoor.layerNum = 1;
 
-module.exports = Ladder;
+module.exports = ExitDoor;

@@ -26,11 +26,10 @@ class UI extends Entity {
   }
 
   drawEnd(ctx: any) {
-    ctx.font = '64px Helvetica';
+    ctx.font = '8px "Press Start 2P"';
     ctx.textAlign = "center";
 
-    ctx.fillText("you escaped!", 320, 210);
-    ctx.fillText("press space to replay", 320, 280);
+    ctx.fillText('you win', 80, 70);
   }
 
   drawLoading(ctx: any) {
@@ -52,7 +51,7 @@ class UI extends Entity {
     var fps = Math.round(1000 / this.avgTick.get());
 
     ctx.fillStyle = 'black';
-    ctx.font = '10px Helvetica';
+    ctx.font = '8px "Press Start 2P"';
     ctx.textAlign = 'right';
     ctx.fillText(fps, this.game.width - 5, 10);
   }

@@ -2,8 +2,11 @@
 
 var Entity = require('./Entity');
 var Block = require('./tiles/Block');
+var LockedBlock = require('./tiles/LockedBlock');
 var Ladder = require('./tiles/Ladder');
+var ExitDoor = require('./tiles/ExitDoor');
 var Platform = require('./tiles/Platform');
+var Key = require('./Key');
 
 var rectangleIntersection = require('../lib/math').rectangleIntersection;
 var SpriteSheet = require('../lib/SpriteSheet');
@@ -102,6 +105,9 @@ class Player extends Entity {
       if (tileBehind instanceof Ladder) {
         this._enterLadder(dt, tileBehind);
         return;
+      } else if (tileBehind instanceof ExitDoor) {
+        this.game.finishedLevel();
+        return;
       } else if (this.grounded) {
         this.jump();
       }
@@ -178,7 +184,7 @@ class Player extends Entity {
     }
   }
 
-  _enterLadder(dt: number, ladder: Ladder, fromAbove: ?boolean) {
+  _enterLadder(dt: number, ladder: Ladder, fromAbove?: boolean) {
     this.state = LADDER_STATE;
     this.vec.x = 0;
     this.vec.y = 0;
@@ -275,6 +281,13 @@ class Player extends Entity {
           this.grounded = true;
         }
       }
+    }
+
+    if (other instanceof Key) {
+      this.game.c.entities.destroy(other);
+
+      var locked = this.game.c.entities.all(LockedBlock);
+      locked.map((block) => { this.game.c.entities.destroy(block); });
     }
   }
 }

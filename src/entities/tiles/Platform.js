@@ -5,24 +5,14 @@ var TileEntity = require('../TileEntity');
 class Platform extends TileEntity {
   img: Image;
 
-  isEdgeCollidable: {
-    top: boolean;
-    left: boolean;
-    right: boolean;
-    bottom: boolean;
-  };
-
   init(settings: any) {
     this.size = {
       x: 20, y: 20
     };
 
-    this.layerNum = settings.layerNum;
-    this.zindex = this.layerNum;
+    super(settings);
 
-    this.center = this.getCenter(settings.tileX, settings.tileY);
     this.img = this.game.assets.images.platform;
-    this.isEdgeCollidable = settings.isEdgeCollidable;
   }
 
   draw(ctx: any) {
