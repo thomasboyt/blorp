@@ -15,6 +15,7 @@ class World extends Entity {
   camY: number;
   level: Level;
   tileLayers: TileLayers;
+  objects: Array<Entity>;  // </>
 
   init(settings: any) {
     var level = this.level = settings.level;

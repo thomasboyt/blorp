@@ -51,6 +51,7 @@ class Game {
   tileHeight: number;
 
   ui: UI;
+  currentWorld: World;
 
   constructor() {
     this.audioManager = new AudioManager();
