@@ -32,6 +32,15 @@ class UI extends Entity {
     ctx.fillText('you win', 80, 70);
   }
 
+  drawDead(ctx: any) {
+    ctx.font = '8px "Press Start 2P"';
+    ctx.textAlign = "center";
+
+    ctx.fillText('you died :(', 80, 65);
+    ctx.fillText('press space', 80, 75);
+    ctx.fillText('to retry...', 80, 85);
+  }
+
   drawLoading(ctx: any) {
     this._drawLoadingBar(ctx, 100, 250, 450, 20);
   }
@@ -76,6 +85,8 @@ class UI extends Entity {
       this.drawPlaying(ctx);
     } else if (fsm.is('ended')) {
       this.drawEnd(ctx);
+    } else if (fsm.is('dead')) {
+      this.drawDead(ctx);
     } else if (fsm.is('attract')) {
       this.drawAttract(ctx);
     } else if (fsm.is('loading')) {

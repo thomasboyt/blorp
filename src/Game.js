@@ -87,7 +87,8 @@ class Game {
       initial: 'loading',
       events: [
         { name: 'loaded', from: ['loading'], to: 'attract' },
-        { name: 'start', from: ['attract', 'ended'], to: 'playing' },
+        { name: 'start', from: ['attract', 'ended', 'dead'], to: 'playing' },
+        { name: 'died', from: 'playing', to: 'dead' },
         { name: 'end', from: 'playing', to: 'ended' }
       ]
     });
@@ -130,12 +131,13 @@ class Game {
     });
   }
 
-  end() {
+  died() {
+    this.fsm.died();
+    this.currentWorld.destroy();
   }
 
   finishedLevel() {
     this.fsm.end();
-
     this.currentWorld.destroy();
   }
 
@@ -147,7 +149,7 @@ class Game {
       this.audioManager.toggleMute();
     }
 
-    if (this.fsm.is('attract') || this.fsm.is('ended')) {
+    if (this.fsm.is('attract') || this.fsm.is('ended') || this.fsm.is('dead')) {
       if (this.c.inputter.isPressed(this.c.inputter.SPACE)) {
         setTimeout(() => {
           this.start(this.fsm);

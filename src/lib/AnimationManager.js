@@ -2,6 +2,8 @@
 
 var Sprite = require('./Sprite');
 
+var blankSprite = new Sprite(new Image(), 0, 0, 0, 0);
+
 class Animation {
   _currentFrameIdx: number;
   _frameLengthMs: ?number;
@@ -35,7 +37,12 @@ class Animation {
 
   getSprite() {
     var frame = this._frames[this._currentFrameIdx];
-    return this._sheet.get(frame);
+
+    if (frame === null) {
+      return blankSprite;
+    } else {
+      return this._sheet.get(frame);
+    }
   }
 
 }

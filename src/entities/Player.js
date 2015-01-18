@@ -7,6 +7,7 @@ var Ladder = require('./tiles/Ladder');
 var ExitDoor = require('./tiles/ExitDoor');
 var Platform = require('./tiles/Platform');
 var Key = require('./Key');
+var Blorp = require('./Blorp');
 
 var rectangleIntersection = require('../lib/math').rectangleIntersection;
 var SpriteSheet = require('../lib/SpriteSheet');
@@ -14,6 +15,7 @@ var AnimationManager = require('../lib/AnimationManager');
 
 var WALK_STATE = 'walk';
 var LADDER_STATE = 'ladder';
+var DEAD_STATE = 'dead';
 
 class Player extends Entity {
   img: Image;
@@ -61,14 +63,20 @@ class Player extends Entity {
 
       climb: {
         sheet: sheet,
-        frames: [2, 3],
+        frames: [4, 5],
         frameLengthMs: this.game.config.playerWalkAnimMs
       },
 
       idleLadder: {
         sheet: sheet,
-        frames: [4],
+        frames: [6],
         frameLengthMs: null
+      },
+
+      dead: {
+        sheet: sheet,
+        frames: [null, 2],
+        frameLengthMs: 200
       }
     });
   }
@@ -82,6 +90,8 @@ class Player extends Entity {
       this._updateWalking(dt);
     } else if (this.state === LADDER_STATE) {
       this._updateOnLadder(dt);
+    } else if (this.state === DEAD_STATE) {
+      this._updateDead(dt);
     }
 
     this.anim.update(dt);
@@ -216,6 +226,10 @@ class Player extends Entity {
     return (bottomEdgeTile instanceof Ladder && centerTile instanceof Ladder);
   }
 
+  _updateDead(dt: number) {
+    this.anim.set('dead');
+  }
+
   draw(ctx: any) {
     var sprite = this.anim.getSprite();
 
@@ -288,6 +302,17 @@ class Player extends Entity {
 
       var locked = this.game.c.entities.all(LockedBlock);
       locked.map((block) => { this.game.c.entities.destroy(block); });
+    }
+
+    if (other instanceof Blorp) {
+      if (this.state !== DEAD_STATE) {
+        this.state = DEAD_STATE;
+
+        // TODO: move this to a Timer inside updateDead()
+        setTimeout(() => {
+          this.game.died();
+        }, 2000);
+      }
     }
   }
 }
