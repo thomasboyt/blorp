@@ -12,7 +12,10 @@ type TileLayers = Array<Tiles>;  // </>
 class World extends Entity {
   width: number;
   height: number;
+
+  camX: number;
   camY: number;
+
   level: Level;
   tileLayers: TileLayers;
   objects: Array<Entity>;  // </>
@@ -24,7 +27,8 @@ class World extends Entity {
     this.width = level.getWidth() * this.game.tileWidth;
     this.height = level.getHeight() * this.game.tileHeight;
 
-    this.camY = this.game.height / 2;
+    this.camX = 0;
+    this.camY = 0;
   }
 
   getTileAt(layer: number, x: number, y: number): ?Entity {
@@ -109,8 +113,8 @@ class World extends Entity {
   }
 
   _updateCamera() {
-    // camY only moves if player is >1/5 screen px above/below it
-    var threshold = this.game.height/5;
+    var xThreshold = 5;
+    var yThreshold = 25;
 
     var player = this.game.c.entities.all(Player)[0];
 
@@ -118,18 +122,22 @@ class World extends Entity {
       return;
     }
 
-    var diff = this.camY - player.center.y;
+    var xDiff = this.camX - player.center.x;
 
-    if (Math.abs(diff) > threshold) {
-      if (diff > 0) {
-        this.camY -= diff - threshold;
-      } else {
-        this.camY -= diff + threshold;
-      }
+    if (Math.abs(xDiff) > xThreshold) {
+      var mult = xDiff > 0 ? -1 : 1;
+      this.camX -= xDiff + mult * xThreshold;
+    }
+
+    var yDiff = this.camY - player.center.y;
+
+    if (Math.abs(yDiff) > yThreshold) {
+      var mult = yDiff > 0 ? -1 : 1;
+      this.camY -= yDiff + mult * yThreshold;
     }
 
     this.game.c.renderer.setViewCenter({
-      x: player.center.x,
+      x: this.camX,
       y: this.camY
     });
   }
