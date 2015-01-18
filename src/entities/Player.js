@@ -88,7 +88,9 @@ class Player extends Entity {
     var step = dt/100;
 
     // TODO: Does this allow you to double jump if you jump at the peak of an arc?
-    var grounded = this.vec.y === 0;
+    if (this.vec.y !== 0) {
+      this.grounded = false;
+    }
 
     // Zero out x velocity, since it doesn't have any form of (de)acceleration
     this.vec.x = 0;
@@ -100,13 +102,13 @@ class Player extends Entity {
       if (tileBehind instanceof Ladder) {
         this._enterLadder(dt, tileBehind);
         return;
-      } else if (grounded) {
+      } else if (this.grounded) {
         this.jump();
       }
     }
 
     if (this.game.c.inputter.isPressed(this.game.c.inputter.DOWN_ARROW)) {
-      if (grounded) {
+      if (this.grounded) {
         var yBelow = this.center.y + this.game.tileHeight;
         var tileBelow = this.world.getTileAt(Ladder.layerNum, this.center.x, yBelow);
 
@@ -133,7 +135,7 @@ class Player extends Entity {
     this.center.x += this.vec.x * step;
     this.center.y += this.vec.y * step;
 
-    if (this.vec.x && grounded) {
+    if (this.vec.x && this.grounded) {
       this.anim.set('walk');
     } else {
       this.anim.set('stand');
@@ -239,6 +241,7 @@ class Player extends Entity {
             // Zero out player velocity when they hit the block, and set grounded
             if (this.vec.y > 0) {
               this.vec.y = 0;
+              this.grounded = true;
             }
 
           // Player is rising into a block from below
@@ -269,6 +272,7 @@ class Player extends Entity {
         if (intersect.w > intersect.h && intersect.fromAbove && other.isEdgeCollidable.top) {
           this.center.y -= intersect.h;
           this.vec.y = 0;
+          this.grounded = true;
         }
       }
     }
