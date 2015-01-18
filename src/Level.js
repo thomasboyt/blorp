@@ -8,6 +8,7 @@ var ENTITY_TYPES = {
   'LockedBlock': require('./entities/tiles/LockedBlock'),
   'Ladder': require('./entities/tiles/Ladder'),
   'ExitDoor': require('./entities/tiles/ExitDoor'),
+  'Spikes': require('./entities/tiles/Spikes'),
   'Player': require('./entities/Player'),
   'Blorp': require('./entities/Blorp'),
   'Key': require('./entities/Key'),

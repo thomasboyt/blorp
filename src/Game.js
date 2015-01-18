@@ -124,7 +124,7 @@ class Game {
   start() {
     this.fsm.start();
 
-    var level = getParameterByName('level') || '1';
+    var level = getParameterByName('level') || '2';
 
     this.currentWorld = this.createEntity(World, {
       level: this.assets.levels[level]

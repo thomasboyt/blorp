@@ -29,8 +29,8 @@ class TileEntity extends Entity {
     var tileW = this.game.tileWidth;
 
     return {
-      x: (tileX * tileW) + (tileW / 2),
-      y: (tileY * tileH) + (tileH / 2)
+      x: (tileX * tileW) + (this.size.x / 2),
+      y: (tileY * tileH) + (this.size.y / 2)
     };
   }
 }

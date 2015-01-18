@@ -17,6 +17,7 @@ module.exports = {
     'ladder': require('../../assets/images/ladder.png'),
     'key': require('../../assets/images/key.png'),
     'exitDoor': require('../../assets/images/exit_door.png'),
+    'spikes': require('../../assets/images/spikes.png'),
 
     'playerSheet': require('../../assets/images/player_sheet.png'),
     'blorpSheet': require('../../assets/images/blorp_sheet.png')

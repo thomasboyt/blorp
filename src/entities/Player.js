@@ -6,6 +6,8 @@ var LockedBlock = require('./tiles/LockedBlock');
 var Ladder = require('./tiles/Ladder');
 var ExitDoor = require('./tiles/ExitDoor');
 var Platform = require('./tiles/Platform');
+var Spikes = require('./tiles/Spikes');
+
 var Key = require('./Key');
 var Blorp = require('./Blorp');
 
@@ -304,7 +306,7 @@ class Player extends Entity {
       locked.map((block) => { this.game.c.entities.destroy(block); });
     }
 
-    if (other instanceof Blorp) {
+    if (other instanceof Blorp || other instanceof Spikes) {
       if (this.state !== DEAD_STATE) {
         this.state = DEAD_STATE;
 
