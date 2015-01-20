@@ -11,6 +11,7 @@ var ENTITY_TYPES = {
   'Spikes': require('./entities/tiles/Spikes'),
   'Player': require('./entities/Player'),
   'Blorp': require('./entities/Blorp'),
+  'Spawner': require('./entities/Spawner'),
   'Key': require('./entities/Key'),
 };
 
@@ -19,6 +20,10 @@ type TileIndexEntityMap = {
 };
 
 type TileMap = Array<Array<number>>;  // </>
+
+type StringMap = {
+  [key:string]: string
+};
 
 class Level {
   tileNames: TileIndexEntityMap;
@@ -87,9 +92,25 @@ class Level {
       return {
         Type: this._getEntityForName(object.getAttribute('type')),
         x: parseInt(object.getAttribute('x'), 10),
-        y: parseInt(object.getAttribute('y'), 10)
+        y: parseInt(object.getAttribute('y'), 10),
+        properties: this._parseProperties(object.querySelector('properties'))
       };
     });
+  }
+
+  _parseProperties(node: ?Node): StringMap {
+    var map = {};
+
+    if (node === null) {
+      return map;
+    }
+
+    var properties = node.querySelectorAll('property');
+    Array.prototype.forEach.call(properties, (property) => {
+      map[property.getAttribute('name')] = property.getAttribute('value');
+    });
+
+    return map;
   }
 
   _getEntityForName(name: string): any {

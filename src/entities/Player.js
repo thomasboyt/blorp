@@ -10,6 +10,7 @@ var Spikes = require('./tiles/Spikes');
 
 var Key = require('./Key');
 var Blorp = require('./Blorp');
+var Bullet = require('./Bullet');
 
 var rectangleIntersection = require('../lib/math').rectangleIntersection;
 var SpriteSheet = require('../lib/SpriteSheet');
@@ -22,10 +23,6 @@ var DEAD_STATE = 'dead';
 class Player extends Entity {
   img: Image;
   anim: AnimationManager;
-
-  // TODO: This causes a breaking circular dependency
-  // world: World;
-  world: any;
 
   grounded: boolean;
   facingLeft: boolean;
@@ -43,7 +40,6 @@ class Player extends Entity {
     this.vec = {x: 0, y: 0};
     this.zindex = 100;
 
-    this.world = settings.world;
     this.state = WALK_STATE;
 
     this.facingLeft = false;
@@ -87,6 +83,14 @@ class Player extends Entity {
     this.vec.y = -this.game.config.jumpSpeed;
   }
 
+  _shoot() {
+    this.game.createEntity(Bullet, {
+      creator: this,
+      direction: this.facingLeft ? 'left' : 'right',  // TODO: shoot up/down?
+      speed: 15
+    });
+  }
+
   update(dt: number) {
     if (this.state === WALK_STATE) {
       this._updateWalking(dt);
@@ -112,7 +116,7 @@ class Player extends Entity {
 
     // Up button has several meanings depending on context (what you're standing in front of)
     if (this.game.c.inputter.isPressed(this.game.c.inputter.UP_ARROW)) {
-      var tileBehind = this.world.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
+      var tileBehind = this.game.currentWorld.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
 
       if (tileBehind instanceof Ladder) {
         this._enterLadder(dt, tileBehind);
@@ -120,15 +124,23 @@ class Player extends Entity {
       } else if (tileBehind instanceof ExitDoor) {
         this.game.finishedLevel();
         return;
-      } else if (this.grounded) {
+      }
+    }
+
+    if (this.game.c.inputter.isPressed(this.game.c.inputter.Z)) {
+      if (this.grounded) {
         this.jump();
       }
+    }
+
+    if (this.game.c.inputter.isPressed(this.game.c.inputter.X)) {
+      this._shoot();
     }
 
     if (this.game.c.inputter.isPressed(this.game.c.inputter.DOWN_ARROW)) {
       if (this.grounded) {
         var yBelow = this.center.y + this.game.tileHeight;
-        var tileBelow = this.world.getTileAt(Ladder.layerNum, this.center.x, yBelow);
+        var tileBelow = this.game.currentWorld.getTileAt(Ladder.layerNum, this.center.x, yBelow);
 
         if (tileBelow instanceof Ladder) {
           this._enterLadder(dt, tileBelow, true);
@@ -220,10 +232,10 @@ class Player extends Entity {
   _checkOnLadder(): boolean {
     // Check that player's bottom edge is on a ladder
     var y = this.center.y + this.size.y / 2;
-    var bottomEdgeTile = this.world.getTileAt(Ladder.layerNum, this.center.x, y);
+    var bottomEdgeTile = this.game.currentWorld.getTileAt(Ladder.layerNum, this.center.x, y);
 
     // Check that the player's center is on a ladder
-    var centerTile = this.world.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
+    var centerTile = this.game.currentWorld.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
 
     return (bottomEdgeTile instanceof Ladder && centerTile instanceof Ladder);
   }
@@ -307,14 +319,14 @@ class Player extends Entity {
     }
 
     if (other instanceof Blorp || other instanceof Spikes) {
-      if (this.state !== DEAD_STATE) {
-        this.state = DEAD_STATE;
-
-        // TODO: move this to a Timer inside updateDead()
-        setTimeout(() => {
-          this.game.died();
-        }, 2000);
-      }
+      // if (this.state !== DEAD_STATE) {
+      //   this.state = DEAD_STATE;
+      //
+      //   // TODO: move this to a Timer inside updateDead()
+      //   setTimeout(() => {
+      //     this.game.died();
+      //   }, 2000);
+      // }
     }
   }
 }

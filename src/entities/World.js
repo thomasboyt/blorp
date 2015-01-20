@@ -38,6 +38,10 @@ class World extends Entity {
     return this.tileLayers[layer][row][col];
   }
 
+  getPlayer(): Player {
+    return this.game.c.entities.all(Player)[0];
+  }
+
   destroy() {
     this.game.c.entities.destroy(this);
 
@@ -107,7 +111,7 @@ class World extends Entity {
           x: obj.x + this.game.tileWidth / 2,
           y: obj.y - this.game.tileHeight / 2
         },
-        world: this
+        properties: obj.properties
       });
     });
   }
@@ -116,7 +120,7 @@ class World extends Entity {
     var xThreshold = 5;
     var yThreshold = 25;
 
-    var player = this.game.c.entities.all(Player)[0];
+    var player = this.getPlayer();
 
     if (!player) {
       return;
@@ -143,7 +147,7 @@ class World extends Entity {
   }
 
   update(dt: number) {
-    this._updateCamera();
+    // this._updateCamera();
   }
 }
 

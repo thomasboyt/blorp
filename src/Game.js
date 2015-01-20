@@ -12,12 +12,13 @@ var setupFullscreen = require('./lib/setupFullscreen');
 
 var assets = require('./config/assets');
 var config = require('./config/game');
+var Level = require('./Level');
+var SpawnerManager = require('./SpawnerManager');
 
 var Entity = require('./entities/Entity');
 var UI = require('./entities/UI');
 var World = require('./entities/World');
 var Player = require('./entities/Player');
-var Level = require('./Level');
 
 function getParameterByName(name) {
   var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
@@ -52,6 +53,7 @@ class Game {
 
   ui: UI;
   currentWorld: World;
+  spawnerManager: SpawnerManager;
 
   constructor() {
     this.audioManager = new AudioManager();
@@ -60,8 +62,8 @@ class Game {
     this.config = config;
     this.levels = {};
 
-    this.width = 160;
-    this.height = 140;
+    this.width = 400;
+    this.height = 400;
 
     this.tileWidth = 20;
     this.tileHeight = 20;
@@ -129,10 +131,14 @@ class Game {
     this.currentWorld = this.createEntity(World, {
       level: this.assets.levels[level]
     });
+
+    this.spawnerManager = new SpawnerManager(this);
+    this.spawnerManager.start();
   }
 
   died() {
     this.fsm.died();
+    this.spawnerManager.stop();
     this.currentWorld.destroy();
   }
 

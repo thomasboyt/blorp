@@ -17,10 +17,9 @@ module.exports = {
   blorpSpeed: 3,
 
   playerWalkAnimMs: 200,
-  blorpWalkAnimMs: 200
+  blorpWalkAnimMs: 200,
+
+  minSpawnDelay: 2000,
+  initialSpawnDelay: 5000,
+  timeToFinalSpawnDelayMs: 60 * 1000
 };
-
-
-// Feed ms to timer on each update() tick
-// Timer cycles to next index after hitting threshold
-// Get sprite from timer on each draw()

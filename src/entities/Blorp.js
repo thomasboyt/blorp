@@ -4,6 +4,7 @@ var Entity = require('./Entity');
 var Block = require('./tiles/Block');
 var Platform = require('./tiles/Platform');
 var Player = require('./Player');
+var Bullet = require('./Bullet');
 var rectangleIntersection = require('../lib/math').rectangleIntersection;
 var SpriteSheet = require('../lib/SpriteSheet');
 var AnimationManager = require('../lib/AnimationManager');
@@ -27,7 +28,7 @@ class Blorp extends Entity {
     this.zindex = 100;
 
     this.grounded = true;
-    this.walkingRight = false;
+    this.walkingRight = settings.direction === 'left' ? - 1 : 1;
 
     var sheet = new SpriteSheet(this.game.assets.images.blorpSheet, this.size.x, this.size.y);
 
@@ -49,12 +50,40 @@ class Blorp extends Entity {
   update(dt: number) {
     var step = dt/100;
 
+    if (this.vec.y !== 0) {
+      this.grounded = false;
+    }
+
     var spd = this.game.config.blorpSpeed * step;
 
-    if (this.walkingRight) {
-      this.vec.x = spd;
-    } else {
-      this.vec.x = -spd;
+    var walkDirection = this.walkingRight ? 1 : -1;
+
+    // if player is within 3 x tiles and 1 y tile, walk towards player
+    var playerCenter = this.game.currentWorld.getPlayer().center;
+
+    var xDiff = playerCenter.x - this.center.x;
+    var yDiff = playerCenter.y - this.center.y;
+
+    if (Math.abs(xDiff) < 60 && Math.abs(yDiff) < 25) {
+      walkDirection = xDiff > 0 ? 1 : -1;
+    }
+
+    this.vec.x = walkDirection * spd;
+
+    // Check to see if there's a block in front of us, and jump if so
+    var tileInFront = this.game.currentWorld.getTileAt(0, this.center.x + (this.game.tileWidth * walkDirection), this.center.y);
+
+    if (tileInFront instanceof Block) {
+      // Check to make sure there's not a tile above it that can't be reached
+      var tileInFrontAbove = this.game.currentWorld.getTileAt(0,
+        this.center.x + (this.game.tileWidth * walkDirection),
+        this.center.y - this.game.tileHeight);
+
+      if (!(tileInFrontAbove instanceof Block)) {
+        if (this.grounded) {
+          this.jump();
+        }
+      }
     }
 
     this.vec.y += this.game.config.gravityAccel;
@@ -71,6 +100,10 @@ class Blorp extends Entity {
     }
   }
 
+  jump() {
+    this.vec.y = -this.game.config.jumpSpeed;
+  }
+
   draw(ctx: any) {
     var sprite = this.anim.getSprite();
 
@@ -83,6 +116,7 @@ class Blorp extends Entity {
   collision(other: Entity) {
     var intersect = rectangleIntersection(this, other);
 
+    // TODO: replace with nicer code from Player
     if (other instanceof Block) {
       if (intersect.w > intersect.h) {
         // do y correction
@@ -109,13 +143,13 @@ class Blorp extends Entity {
         }
         this.vec.x = 0;
       }
-    } else if (other instanceof Platform) {
-      if (intersect.w > intersect.h && intersect.fromAbove && other.isEdgeCollidable.top) {
-        this.center.y -= intersect.h;
-        this.vec.y = 0;
-        this.grounded = true;
-      }
     }
+
+    if (other instanceof Bullet) {
+      this.game.c.entities.destroy(this);
+      this.game.c.entities.destroy(other);
+    }
+
   }
 }
 

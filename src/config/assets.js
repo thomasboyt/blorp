@@ -24,6 +24,7 @@ module.exports = {
   },
   levels: {
     '1': require('../../assets/levels/1.tmx'),
-    '2': require('../../assets/levels/2.tmx')
+    '2': require('../../assets/levels/2.tmx'),
+    'arena': require('../../assets/levels/arena.tmx')
   }
 };
