@@ -19,6 +19,7 @@ var Entity = require('./entities/Entity');
 var UI = require('./entities/UI');
 var World = require('./entities/World');
 var Player = require('./entities/Player');
+var Blorp = require('./entities/Blorp');
 
 function getParameterByName(name) {
   var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
@@ -126,7 +127,7 @@ class Game {
   start() {
     this.fsm.start();
 
-    var level = getParameterByName('level') || '2';
+    var level = getParameterByName('level') || 'arena';
 
     this.currentWorld = this.createEntity(World, {
       level: this.assets.levels[level]
@@ -136,9 +137,17 @@ class Game {
     this.spawnerManager.start();
   }
 
+  destroyAll(type) {
+    this.c.entities.all(type).map((entity) => {
+      this.c.entities.destroy(entity);
+    });
+  }
+
   died() {
     this.fsm.died();
     this.spawnerManager.stop();
+
+    this.destroyAll(Blorp);
     this.currentWorld.destroy();
   }
 

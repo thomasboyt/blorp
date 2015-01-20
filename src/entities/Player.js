@@ -319,14 +319,14 @@ class Player extends Entity {
     }
 
     if (other instanceof Blorp || other instanceof Spikes) {
-      // if (this.state !== DEAD_STATE) {
-      //   this.state = DEAD_STATE;
-      //
-      //   // TODO: move this to a Timer inside updateDead()
-      //   setTimeout(() => {
-      //     this.game.died();
-      //   }, 2000);
-      // }
+      if (this.state !== DEAD_STATE) {
+        this.state = DEAD_STATE;
+
+        // TODO: move this to a Timer inside updateDead()
+        setTimeout(() => {
+          this.game.died();
+        }, 2000);
+      }
     }
   }
 }
