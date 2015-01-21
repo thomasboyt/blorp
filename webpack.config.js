@@ -3,7 +3,7 @@ var webpack = require('webpack');
 module.exports = {
   entry: {
     app: './src/main.js',
-    vendor: ['coquette', 'q', 'lodash', 'javascript-state-machine', 'screenfull']
+    vendor: ['coquette', 'q', 'lodash', 'javascript-state-machine', 'screenfull', 'pathfinding']
   },
 
   output: {
