@@ -7,6 +7,7 @@ var Ladder = require('./tiles/Ladder');
 var ExitDoor = require('./tiles/ExitDoor');
 var Platform = require('./tiles/Platform');
 var Spikes = require('./tiles/Spikes');
+var TimerExtendPickup = require('./TimerExtendPickup');
 
 var Key = require('./Key');
 var Blorp = require('./Blorp');
@@ -331,6 +332,11 @@ class Player extends Entity {
           this.game.died();
         }, 2000);
       }
+    }
+
+    if (other instanceof TimerExtendPickup) {
+      this.game.timeLeft += other.timeAdded;
+      this.game.c.entities.destroy(other);
     }
   }
 }

@@ -7,5 +7,5 @@ require('../assets/game.css');
 var Game = require('./Game');
 
 window.onload = () => {
-  new Game();
+  window.game = new Game();
 };

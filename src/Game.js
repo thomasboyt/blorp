@@ -14,13 +14,16 @@ var setupPause = require('./lib/setupPause');
 var assets = require('./config/assets');
 var config = require('./config/game');
 var Level = require('./Level');
-var SpawnerManager = require('./SpawnerManager');
+
+var EnemySpawner = require('./spawners/EnemySpawner');
+var PickupSpawner = require('./spawners/PickupSpawner');
 
 var Entity = require('./entities/Entity');
 var UI = require('./entities/UI');
 var World = require('./entities/World');
 var Player = require('./entities/Player');
 var Blorp = require('./entities/Blorp');
+var TimerExtendPickup = require('./entities/TimerExtendPickup');
 
 function getParameterByName(name) {
   var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
@@ -53,9 +56,16 @@ class Game {
   tileWidth: number;
   tileHeight: number;
 
+  // TODO: move this into a Session() object?
+  timeLeft: number;
+
+  // TODO: move this into a cheats hash?
+  godMode: boolean;
+
   ui: UI;
   currentWorld: World;
-  spawnerManager: SpawnerManager;
+  enemySpawner: EnemySpawner;
+  pickupSpawner: PickupSpawner;
 
   constructor() {
     this.audioManager = new AudioManager();
@@ -109,6 +119,9 @@ class Game {
     this.preloader.load().done((assets) => {
       setTimeout(() => {
         this.loaded(assets);
+        if (getParameterByName('skiptitle')) {
+          this.start();
+        }
       }, 0);
     });
   }
@@ -141,7 +154,8 @@ class Game {
       level: this.assets.levels[level]
     });
 
-    this.spawnerManager = new SpawnerManager(this);
+    this.enemySpawner = new EnemySpawner(this);
+    this.pickupSpawner = new PickupSpawner(this);
   }
 
   destroyAll(type) {
@@ -152,12 +166,6 @@ class Game {
 
   died() {
     this.fsm.died();
-    this.destroyAll(Blorp);
-    this.currentWorld.destroy();
-  }
-
-  finishedLevel() {
-    this.fsm.end();
     this.destroyAll(Blorp);
     this.currentWorld.destroy();
   }
@@ -180,7 +188,13 @@ class Game {
 
     if (this.fsm.is('playing')) {
       this.timeLeft -= dt;
-      this.spawnerManager.update(dt);
+
+      this.enemySpawner.update(dt);
+      this.pickupSpawner.update(dt);
+
+      if (this.timeLeft < 0) {
+        this.died();
+      }
     }
   }
 }

@@ -10,8 +10,8 @@
 module.exports = {
   gravityAccel: 0.5,
 
-  playerSpeed: 6,
-  climbSpeed: 5,
+  playerSpeed: 8,
+  climbSpeed: 8,
   jumpSpeed: 14,
 
   blorpSpeed: 3,
@@ -20,7 +20,7 @@ module.exports = {
   blorpWalkAnimMs: 200,
 
   minSpawnDelay: 2000,
-  initialSpawnDelay: 5000,
+  initialSpawnDelay: 2001,
   timeToFinalSpawnDelayMs: 60 * 1000,
 
   startingTimeMs: 20 * 1000

@@ -1,13 +1,30 @@
 /* @flow */
 
+var _ = require('lodash');
 var Entity = require('./Entity');
 var Player = require('./Player');
+var SpawnPoint = require('./SpawnPoint');
 var Block = require('./tiles/Block');
+var Platform = require('./tiles/Platform');
 var Level = require('../Level');
+var Maths = require('coquette').Collider.Maths;
 
 // TIL flow will not parse 3D arrays
 type Tiles = Array<Array<?Entity>>;  // </>
 type TileLayers = Array<Tiles>;  // </>
+
+type Coordinates = {x: number; y: number};
+
+// Get the indicies of every item in array for which cb(item) returns true
+function filterIndex(array: Array<any>, cb: (item: any) => boolean): Array<number> {  // </></>
+  var res = [];
+  for (var i = 0; i < array.length; i++) {
+    if (cb(array[i]) === true) {
+      res.push(i);
+    }
+  }
+  return res;
+}
 
 class World extends Entity {
   width: number;
@@ -19,6 +36,8 @@ class World extends Entity {
   level: Level;
   tileLayers: TileLayers;
   objects: Array<Entity>;  // </>
+
+  pickupSafeTileLocations: Array<Coordinates>;  // </>
 
   init(settings: any) {
     var level = this.level = settings.level;
@@ -40,6 +59,11 @@ class World extends Entity {
 
   getPlayer(): Player {
     return this.game.c.entities.all(Player)[0];
+  }
+
+  isInBounds(tileX: number, tileY: number): boolean {
+    return tileX < this.tileLayers[0][0].length &&
+           tileY < this.tileLayers[0].length;
   }
 
   destroy() {
@@ -114,41 +138,78 @@ class World extends Entity {
         properties: obj.properties
       });
     });
+
+    this.pickupSafeTileLocations = this._findPickupSafeTiles();
   }
 
-  _updateCamera() {
-    var xThreshold = 5;
-    var yThreshold = 25;
+  _findPickupSafeTiles(): Array<Coordinates> {  // </>
+    // Filter down to only tiles that are:
+    //    a. Empty
+    //    b. Between 1 & 2 tiles above a Block or Platform
+    //    c. Not within 1 tile in any direction of a SpawnPoint
 
-    var player = this.getPlayer();
+    var terrainTiles = this.tileLayers[0];
 
-    if (!player) {
-      return;
-    }
+    var emptyTileIndices = _.flatten(
+      terrainTiles.map((row, y) => {
+        return filterIndex(row, (tile) => tile === null)
+          .map((x) => [x, y]);
+      }),
+      true  // shallow flatten
+    );
 
-    var xDiff = this.camX - player.center.x;
+    var spawns = this.objects.filter((object) => object instanceof SpawnPoint);
 
-    if (Math.abs(xDiff) > xThreshold) {
-      var mult = xDiff > 0 ? -1 : 1;
-      this.camX -= xDiff + mult * xThreshold;
-    }
+    var safeTiles = emptyTileIndices.filter((pair) => {
+      var [x, y] = pair;
 
-    var yDiff = this.camY - player.center.y;
+      // Are we 1 to 2 tiles above a Block or Platform?
+      var tile1Below = this.isInBounds(x, y+1) && terrainTiles[y+1][x];
+      var tile2Below = this.isInBounds(x, y+2) && terrainTiles[y+2][x];
 
-    if (Math.abs(yDiff) > yThreshold) {
-      var mult = yDiff > 0 ? -1 : 1;
-      this.camY -= yDiff + mult * yThreshold;
-    }
+      var aboveSurface = tile1Below instanceof Block || tile1Below instanceof Platform ||
+                         tile2Below instanceof Block || tile2Below instanceof Platform;
 
-    this.game.c.renderer.setViewCenter({
-      x: this.camX,
-      y: this.camY
+      if (!aboveSurface) return false;
+
+      // ...this should be better
+      var tilesAround = [
+        [x - 1, y - 1],
+        [x    , y - 1],
+        [x + 1, y - 1],
+        [x + 1, y    ],
+        [x + 1, y + 1],
+        [x    , y + 1],
+        [x - 1, y - 1],
+        [x - 1, y    ]
+      ];
+
+      var isNearSpawn = _.some(tilesAround, (coord) => {
+        var [tx, ty] = coord;
+        var x = tx * this.game.tileHeight;
+        var y = ty * this.game.tileWidth;
+
+        return _.some(spawns, (spawn) => {
+          // are x and y inside spawn box?
+          return Maths.unrotatedRectanglesIntersecting(spawn, {
+            size: { x: 1, y: 1 },
+            center: { x: x, y: y }
+          });
+        });
+      });
+
+      if (isNearSpawn) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+
+    return safeTiles.map((pair) => {
+      return { x: pair[0], y: pair[1] };
     });
   }
 
-  update(dt: number) {
-    // this._updateCamera();
-  }
 }
 
 module.exports = World;

@@ -11,7 +11,7 @@ var ENTITY_TYPES = {
   'Spikes': require('./entities/tiles/Spikes'),
   'Player': require('./entities/Player'),
   'Blorp': require('./entities/Blorp'),
-  'Spawner': require('./entities/Spawner'),
+  'Spawner': require('./entities/SpawnPoint'),
   'Key': require('./entities/Key'),
 };
 

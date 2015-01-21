@@ -3,7 +3,7 @@
 var Entity = require('./Entity');
 var Blorp = require('./Blorp');
 
-class Spawner extends Entity {
+class SpawnPoint extends Entity {
   img: Image;
   direction: string;
 
@@ -37,4 +37,4 @@ class Spawner extends Entity {
   }
 }
 
-module.exports = Spawner;
+module.exports = SpawnPoint;

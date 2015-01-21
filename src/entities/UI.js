@@ -18,7 +18,7 @@ class UI extends Entity {
     ctx.font = '24px "Press Start 2P"';
     ctx.textAlign = "center";
 
-    ctx.fillText('oh, hello', 200, 200);
+    ctx.fillText('BLORP!', 200, 200);
 
     ctx.font = '16px "Press Start 2P"';
     ctx.fillText("press space", 200, 220);
@@ -36,18 +36,12 @@ class UI extends Entity {
     ctx.fillText(time, 200, 80);
   }
 
-  drawEnd(ctx: any) {
-    ctx.font = '16px "Press Start 2P"';
-    ctx.textAlign = "center";
-
-    ctx.fillText('you win', 200, 200);
-  }
-
   drawDead(ctx: any) {
     ctx.font = '16px "Press Start 2P"';
     ctx.textAlign = "center";
 
-    ctx.fillText('you died :(', 200, 180);
+    var reason = this.game.timeLeft < 0 ? 'out of time :(' : 'you died :(';
+    ctx.fillText(reason, 200, 180);
     ctx.fillText('press space', 200, 200);
     ctx.fillText('to retry...', 200, 220);
   }
