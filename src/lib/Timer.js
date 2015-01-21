@@ -2,7 +2,7 @@
 
 class Timer {
   expireIn: ?number;
-  _startTime: number;
+  _elapsed: number;
 
   constructor(expireIn?: number) {
     if (expireIn === undefined) {
@@ -25,11 +25,15 @@ class Timer {
   }
 
   elapsed(): number {
-    return Date.now() - this._startTime;
+    return this._elapsed;
   }
 
-  reset(): void {
-    this._startTime = Date.now();
+  update(dt: number) {
+    this._elapsed += dt;
+  }
+
+  reset() {
+    this._elapsed = 0;
   }
 }
 

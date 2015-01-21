@@ -21,5 +21,7 @@ module.exports = {
 
   minSpawnDelay: 2000,
   initialSpawnDelay: 5000,
-  timeToFinalSpawnDelayMs: 60 * 1000
+  timeToFinalSpawnDelayMs: 60 * 1000,
+
+  startingTimeMs: 20 * 1000
 };

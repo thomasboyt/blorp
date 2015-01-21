@@ -319,6 +319,10 @@ class Player extends Entity {
     }
 
     if (other instanceof Blorp || other instanceof Spikes) {
+      if (this.game.godMode) {
+        return;
+      }
+
       if (this.state !== DEAD_STATE) {
         this.state = DEAD_STATE;
 

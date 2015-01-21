@@ -6,38 +6,41 @@ var Timer = require('./lib/Timer');
 var math = require('./lib/math');
 
 class SpawnerManager {
-  _curTimeoutId: number;
-  timer: Timer;
+  Game: game;
+  _totalTimer: Timer;
+  _nextSpawnTimer: Timer;
 
   constructor(game: Game) {
     this.game = game;
+
+    this._totalTimer = new Timer();
+    this._spawnNext();
   }
 
-  start() {
-    this.timer = new Timer();
-    this._spawnLoop();
-  }
+  update(dt: number) {
+    this._totalTimer.update(dt);
+    this._nextSpawnTimer.update(dt);
 
-  stop() {
-    clearTimeout(this._curTimeoutId);
-  }
-
-  _spawnLoop() {
-    var ms = this.getSpawnDelay();
-
-    this._curTimeoutId = setTimeout(() => {
+    if (this._nextSpawnTimer.expired()) {
       this._spawnNext();
-      this._spawnLoop();
-    }, ms);
+    }
   }
 
-  getSpawnDelay(): number {
+  _spawnNext() {
+    var spawners = this.game.c.entities.all(Spawner);
+    var spawner = spawners[math.randInt(0, spawners.length - 1)];
+    spawner.spawnBlorp();
+
+    this._nextSpawnTimer = new Timer(this._getSpawnDelay());
+  }
+
+  _getSpawnDelay(): number {
     // The difficulty curve is defined by a few points:
     // 1. The starting spawn delay
     // 2. The final spawn delay
     // 3. The time it takes to drop from the starting delay to the final delay
 
-    var elapsed = this.timer.elapsed();
+    var elapsed = this._totalTimer.elapsed();
     var amntToDrop = this.game.config.initialSpawnDelay - this.game.config.minSpawnDelay;
     var amntDropped = elapsed * (amntToDrop / this.game.config.timeToFinalSpawnDelayMs);
     var delay = this.game.config.initialSpawnDelay - amntDropped;
@@ -45,14 +48,6 @@ class SpawnerManager {
     delay = math.max(delay, this.game.config.minSpawnDelay);
 
     return delay;
-  }
-
-  _spawnNext() {
-    var spawners = this.game.c.entities.all(Spawner);
-
-    var spawner = spawners[math.randInt(0, spawners.length - 1)];
-
-    spawner.spawnBlorp();
   }
 }
 

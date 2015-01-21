@@ -8,7 +8,8 @@ var StateMachine = require('javascript-state-machine');
 var addRegister = require('./lib/addRegister');
 var AudioManager = require('./lib/AudioManager');
 var AssetPreloader = require('./lib/AssetPreloader');
-var setupFullscreen = require('./lib/setupFullscreen');
+var setupFullscreen = require('./lib/setupPause');
+var setupPause = require('./lib/setupPause');
 
 var assets = require('./config/assets');
 var config = require('./config/game');
@@ -84,6 +85,7 @@ class Game {
     });
 
     setupFullscreen(this.c.inputter.F);
+    setupPause(this.c, this.c.inputter.P);
     addRegister(this.c);
 
     this.fsm = StateMachine.create({
@@ -99,10 +101,14 @@ class Game {
     this.preloader = new AssetPreloader(assets, this.audioManager.ctx);
     this.ui = this.createEntity(UI, {});
 
+    if (getParameterByName('godmode')) {
+      console.log('enabled godmode');
+      this.godMode = true;
+    }
+
     this.preloader.load().done((assets) => {
       setTimeout(() => {
         this.loaded(assets);
-        this.start();
       }, 0);
     });
   }
@@ -127,6 +133,8 @@ class Game {
   start() {
     this.fsm.start();
 
+    this.timeLeft = this.config.startingTimeMs;
+
     var level = getParameterByName('level') || 'arena';
 
     this.currentWorld = this.createEntity(World, {
@@ -134,7 +142,6 @@ class Game {
     });
 
     this.spawnerManager = new SpawnerManager(this);
-    this.spawnerManager.start();
   }
 
   destroyAll(type) {
@@ -145,14 +152,13 @@ class Game {
 
   died() {
     this.fsm.died();
-    this.spawnerManager.stop();
-
     this.destroyAll(Blorp);
     this.currentWorld.destroy();
   }
 
   finishedLevel() {
     this.fsm.end();
+    this.destroyAll(Blorp);
     this.currentWorld.destroy();
   }
 
@@ -170,6 +176,11 @@ class Game {
           this.start(this.fsm);
         }, 0);
       }
+    }
+
+    if (this.fsm.is('playing')) {
+      this.timeLeft -= dt;
+      this.spawnerManager.update(dt);
     }
   }
 }
