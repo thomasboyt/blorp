@@ -167,6 +167,7 @@ class Game {
   died() {
     this.fsm.died();
     this.destroyAll(Blorp);
+    this.destroyAll(TimerExtendPickup);
     this.currentWorld.destroy();
   }
 
