@@ -8,6 +8,7 @@ var Block = require('./tiles/Block');
 var Platform = require('./tiles/Platform');
 var Level = require('../Level');
 var Maths = require('coquette').Collider.Maths;
+var PF = require('pathfinding');
 
 // TIL flow will not parse 3D arrays
 type Tiles = Array<Array<?Entity>>;  // </>
@@ -39,6 +40,8 @@ class World extends Entity {
 
   pickupSafeTileLocations: Array<Coordinates>;  // </>
 
+  _pfGrid: any;  // TODO: a Grid declaration would be nice
+
   init(settings: any) {
     var level = this.level = settings.level;
     this._createEntities(level);
@@ -64,6 +67,24 @@ class World extends Entity {
   isInBounds(tileX: number, tileY: number): boolean {
     return tileX < this.tileLayers[0][0].length &&
            tileY < this.tileLayers[0].length;
+  }
+
+  findPath(from: Coordinates, to: Coordinates): Array<Array<number>> {  // </>
+    var grid = this._pfGrid.clone();
+    var finder = new PF.AStarFinder({
+      allowDiagonal: true
+    });
+    var path;
+
+    try {
+      path = finder.findPath(from.x, from.y, to.x, to.y, grid);
+    } catch(err) {
+      console.error('Error while pathfinding from ' + from.x + ',' + from.y + ' to ' + to.x + ',' + to.y);
+      throw err;
+    }
+
+    return path;
+      
   }
 
   destroy() {
@@ -139,7 +160,23 @@ class World extends Entity {
       });
     });
 
+    this._pfGrid = this._createPFGrid();
+
     this.pickupSafeTileLocations = this._findPickupSafeTiles();
+  }
+
+  _createPFGrid() {
+    var terrainTiles = this.tileLayers[0];
+
+    var grid = new PF.Grid(terrainTiles[0].length, terrainTiles.length);
+
+    for (var y = 0; y < terrainTiles.length; y++) {
+      for (var x = 0; x < terrainTiles[0].length; x++) {
+        grid.setWalkableAt(x, y, !(terrainTiles[y][x] instanceof Block));
+      }
+    }
+
+    return grid;
   }
 
   _findPickupSafeTiles(): Array<Coordinates> {  // </>

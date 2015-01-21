@@ -86,8 +86,6 @@ class UI extends Entity {
 
     if (fsm.is('playing')) {
       this.drawPlaying(ctx);
-    } else if (fsm.is('ended')) {
-      this.drawEnd(ctx);
     } else if (fsm.is('dead')) {
       this.drawDead(ctx);
     } else if (fsm.is('attract')) {

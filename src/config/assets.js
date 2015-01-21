@@ -21,7 +21,8 @@ module.exports = {
     'clock': require('../../assets/images/clock.png'),
 
     'playerSheet': require('../../assets/images/player_sheet.png'),
-    'blorpSheet': require('../../assets/images/blorp_sheet.png')
+    'blorpSheet': require('../../assets/images/blorp_sheet.png'),
+    'blatSheet': require('../../assets/images/blat_sheet.png')
   },
   levels: {
     '1': require('../../assets/levels/1.tmx'),

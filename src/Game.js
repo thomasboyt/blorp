@@ -23,6 +23,7 @@ var UI = require('./entities/UI');
 var World = require('./entities/World');
 var Player = require('./entities/Player');
 var Blorp = require('./entities/Blorp');
+var Blat = require('./entities/Blat');
 var TimerExtendPickup = require('./entities/TimerExtendPickup');
 
 function getParameterByName(name) {
@@ -167,6 +168,7 @@ class Game {
   died() {
     this.fsm.died();
     this.destroyAll(Blorp);
+    this.destroyAll(Blat);
     this.destroyAll(TimerExtendPickup);
     this.currentWorld.destroy();
   }

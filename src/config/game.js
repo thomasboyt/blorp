@@ -15,9 +15,11 @@ module.exports = {
   jumpSpeed: 14,
 
   blorpSpeed: 3,
+  blatSpeed: 3,
 
   playerWalkAnimMs: 200,
   blorpWalkAnimMs: 200,
+  blatFlyAnimMs: 100,
 
   minSpawnDelay: 2000,
   initialSpawnDelay: 2001,

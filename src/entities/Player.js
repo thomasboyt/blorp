@@ -2,15 +2,13 @@
 
 var Entity = require('./Entity');
 var Block = require('./tiles/Block');
-var LockedBlock = require('./tiles/LockedBlock');
 var Ladder = require('./tiles/Ladder');
-var ExitDoor = require('./tiles/ExitDoor');
 var Platform = require('./tiles/Platform');
 var Spikes = require('./tiles/Spikes');
 var TimerExtendPickup = require('./TimerExtendPickup');
 
-var Key = require('./Key');
 var Blorp = require('./Blorp');
+var Blat = require('./Blat');
 var Bullet = require('./Bullet');
 
 var rectangleIntersection = require('../lib/math').rectangleIntersection;
@@ -121,9 +119,6 @@ class Player extends Entity {
 
       if (tileBehind instanceof Ladder) {
         this._enterLadder(dt, tileBehind);
-        return;
-      } else if (tileBehind instanceof ExitDoor) {
-        this.game.finishedLevel();
         return;
       }
     }
@@ -312,14 +307,7 @@ class Player extends Entity {
       }
     }
 
-    if (other instanceof Key) {
-      this.game.c.entities.destroy(other);
-
-      var locked = this.game.c.entities.all(LockedBlock);
-      locked.map((block) => { this.game.c.entities.destroy(block); });
-    }
-
-    if (other instanceof Blorp || other instanceof Spikes) {
+    if (other instanceof Blorp || other instanceof Spikes || other instanceof Blat) {
       if (this.game.godMode) {
         return;
       }
