@@ -42,35 +42,17 @@ class Blat extends Entity {
     var spd = this.game.config.blatSpeed * step;
 
     // Find a path from us to the player
-    var btx = Math.floor(this.center.x / this.game.tileWidth);
-    var bty = Math.floor(this.center.y / this.game.tileWidth);
-
-    var playerCenter = this.game.currentWorld.getPlayer().center;
-    var ptx = Math.floor(playerCenter.x / this.game.tileWidth);
-    var pty = Math.floor(playerCenter.y / this.game.tileHeight);
-
-    var path = this.game.currentWorld.findPath({x: btx, y: bty}, {x: ptx, y: pty});
+    var path = this.game.currentWorld.findPathToPlayer(this.center);
 
     // fly toward the next target in the path
-    var next = path[1];
-
-    if (next === undefined) {
-      // No path could be found, so use previous player coords
-      path = this.game.currentWorld.findPath({x: btx, y: bty}, {x: this._lastPtx, y: this._lastPty});
-      next = path[1];
-    } else {
-      this._lastPtx = ptx;
-      this._lastPty = pty;
-    }
+    var next = path[1] || path[0];
 
     var vec;
 
     if (next === undefined) {
-      // If we STILL don't have a set next, that means that the player has been found,
-      // and we can just hang out until they are dead
-      next = path[0];
+      // we've reached the player, so chill until they are hecka dead
+      vec = { x: 0, y: 0 };
 
-      vec = {x: 0, y: 0};
     } else {
       var nx = next[0] * this.game.tileWidth + (this.game.tileWidth / 2);
       var ny = next[1] * this.game.tileHeight + (this.game.tileHeight / 2);

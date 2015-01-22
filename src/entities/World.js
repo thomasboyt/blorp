@@ -41,6 +41,8 @@ class World extends Entity {
   pickupSafeTileLocations: Array<Coordinates>;  // </>
 
   _pfGrid: any;  // TODO: a Grid declaration would be nice
+  _lastPtx: number;
+  _lastPty: number;
 
   init(settings: any) {
     var level = this.level = settings.level;
@@ -69,13 +71,38 @@ class World extends Entity {
            tileY < this.tileLayers[0].length;
   }
 
+  /**
+   * Accepts a pixel coordinate pair, not tiled
+   */
+  findPathToPlayer(from: Coordinates): Array<Array<number>> {  // </>
+    var tx = Math.floor(from.x / this.game.tileWidth);
+    var ty = Math.floor(from.y / this.game.tileWidth);
+
+    var playerCenter = this.getPlayer().center;
+    var ptx = Math.floor(playerCenter.x / this.game.tileWidth);
+    var pty = Math.floor(playerCenter.y / this.game.tileHeight);
+
+    var path = this.game.currentWorld.findPath({x: tx, y: ty}, {x: ptx, y: pty});
+
+    if (path.length === 0) {
+      // No path could be found, so use previous player coords
+      path = this.game.currentWorld.findPath({x: tx, y: ty}, {x: this._lastPtx, y: this._lastPty});
+    } else {
+      this._lastPtx = ptx;
+      this._lastPty = pty;
+    }
+
+    return path;
+  }
+
   findPath(from: Coordinates, to: Coordinates): Array<Array<number>> {  // </>
     var grid = this._pfGrid.clone();
     var finder = new PF.AStarFinder({
-      allowDiagonal: true
+      allowDiagonal: true,
+      dontCrossCorners: false
     });
-    var path;
 
+    var path;
     try {
       path = finder.findPath(from.x, from.y, to.x, to.y, grid);
     } catch(err) {
