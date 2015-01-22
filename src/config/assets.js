@@ -12,10 +12,8 @@ module.exports = {
   images: {
     // TODO: spritesheet these
     'block': require('../../assets/images/block.png'),
-    'lockedBlock': require('../../assets/images/locked_block.png'),
     'platform': require('../../assets/images/platform.png'),
     'ladder': require('../../assets/images/ladder.png'),
-    'key': require('../../assets/images/key.png'),
     'exitDoor': require('../../assets/images/exit_door.png'),
     'spikes': require('../../assets/images/spikes.png'),
     'clock': require('../../assets/images/clock.png'),
@@ -25,8 +23,6 @@ module.exports = {
     'blatSheet': require('../../assets/images/blat_sheet.png')
   },
   levels: {
-    '1': require('../../assets/levels/1.tmx'),
-    '2': require('../../assets/levels/2.tmx'),
     'arena': require('../../assets/levels/arena.tmx')
   }
 };

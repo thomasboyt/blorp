@@ -15,41 +15,23 @@
   </tile>
   <tile id="2">
    <properties>
-    <property name="Entity" value="Blorp"/>
-   </properties>
-   <image width="13" height="13" source="../images/blorp.png"/>
-  </tile>
-  <tile id="3">
-   <properties>
     <property name="Entity" value="Ladder"/>
    </properties>
    <image width="20" height="20" source="../images/ladder.png"/>
   </tile>
-  <tile id="4">
+  <tile id="3">
    <properties>
     <property name="Entity" value="Platform"/>
    </properties>
    <image width="20" height="20" source="../images/platform.png"/>
   </tile>
-  <tile id="5">
-   <properties>
-    <property name="Entity" value="LockedBlock"/>
-   </properties>
-   <image width="20" height="20" source="../images/locked_block.png"/>
-  </tile>
-  <tile id="6">
-   <properties>
-    <property name="Entity" value="Key"/>
-   </properties>
-   <image width="10" height="5" source="../images/key.png"/>
-  </tile>
-  <tile id="7">
+  <tile id="4">
    <properties>
     <property name="Entity" value="Spawner"/>
    </properties>
    <image width="20" height="20" source="../images/exit_door.png"/>
   </tile>
-  <tile id="8">
+  <tile id="5">
    <properties>
     <property name="Entity" value="Spikes"/>
    </properties>
@@ -66,7 +48,7 @@
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,
-1,1,1,0,0,5,5,5,5,0,0,5,5,5,5,0,0,1,1,1,
+1,1,1,0,0,4,4,4,4,0,0,4,4,4,4,0,0,1,1,1,
 1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
 1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
@@ -92,9 +74,9 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,4,0,0,0,0,4,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,4,0,0,0,0,4,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,4,0,0,0,0,4,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,3,0,0,0,0,3,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,3,0,0,0,0,3,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,3,0,0,0,0,3,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -106,14 +88,14 @@
  </layer>
  <objectgroup name="Object Layer 1">
   <object id="1" type="Player" gid="2" x="190" y="260"/>
-  <object id="7" type="Spawner" gid="8" x="360" y="140">
+  <object id="7" type="Spawner" gid="5" x="360" y="140">
    <properties>
     <property name="direction" value="left"/>
    </properties>
   </object>
-  <object id="8" type="Spawner" gid="8" x="20" y="140"/>
-  <object id="9" type="Spawner" gid="8" x="20" y="340"/>
-  <object id="10" type="Spawner" gid="8" x="360" y="340">
+  <object id="8" type="Spawner" gid="5" x="20" y="140"/>
+  <object id="9" type="Spawner" gid="5" x="20" y="340"/>
+  <object id="10" type="Spawner" gid="5" x="360" y="340">
    <properties>
     <property name="direction" value="left"/>
    </properties>
