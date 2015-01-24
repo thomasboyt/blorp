@@ -12,7 +12,7 @@ class SpawnPoint extends Entity {
   init(settings: any) {
     this.center = settings.center;
     this.size = {x: 20, y: 20};
-    this.zindex = 100;
+    this.zindex = this.game.config.zIndexes.spawnPoint;
 
     this.direction = settings.properties.direction;
 

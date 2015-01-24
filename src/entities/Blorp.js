@@ -25,7 +25,7 @@ class Blorp extends PlatformerPhysicsEntity  {
     this.center = settings.center;
     this.size = {x: 13, y: 13};
     this.vec = {x: 0, y: 0};
-    this.zindex = 105;
+    this.zindex = this.game.config.zIndexes.blorp;
 
     this.grounded = true;
     this.walkingRight = settings.direction !== 'left';

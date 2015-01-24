@@ -26,6 +26,7 @@ class Bullet extends Entity {
 
   init(settings: Options) {
     this.size = { x:2, y:2 };
+    this.zindex = this.game.config.zIndexes.bullet;
 
     this.speed = settings.speed;
     var creator = this.creator = settings.creator;

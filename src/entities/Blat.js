@@ -22,7 +22,7 @@ class Blat extends Entity {
     this.center = settings.center;
     this.size = {x: 23, y: 10};
     this.vec = {x: 0, y: 0};
-    this.zindex = 105;
+    this.zindex = this.game.config.zIndexes.blat;
 
     var sheet = new SpriteSheet(this.game.assets.images.blatSheet, this.size.x, this.size.y);
 

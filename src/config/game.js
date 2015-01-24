@@ -22,8 +22,17 @@ module.exports = {
   blatFlyAnimMs: 100,
 
   minSpawnDelay: 2000,
-  initialSpawnDelay: 2001,
+  initialSpawnDelay: 4000,
   timeToFinalSpawnDelayMs: 60 * 1000,
 
-  startingTimeMs: 20 * 1000
+  startingTimeMs: 20 * 1000,
+
+  zIndexes: {
+    spawnPoint: 100,
+    player: 101,
+    blat: 102,
+    blorp: 102,
+    bullet: 103,
+    timeExtend: 104
+  }
 };

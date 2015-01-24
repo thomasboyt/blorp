@@ -32,7 +32,7 @@ class Player extends PlatformerPhysicsEntity {
     this.size = {x: 11, y: 20};
 
     this.vec = {x: 0, y: 0};
-    this.zindex = 100;
+    this.zindex = this.game.config.zIndexes.player;
 
     this.state = WALK_STATE;
 
