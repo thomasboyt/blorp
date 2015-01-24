@@ -7,8 +7,11 @@ var math = require('../lib/math');
 class EnemySpawner extends Spawner {
   spawnNext() {
     var spawners = this.game.c.entities.all(SpawnPoint);
-    var spawner = spawners[math.randInt(0, spawners.length - 1)];
-    spawner.spawnBlorp();
+
+    if (spawners.length > 0) {
+      var spawner = spawners[math.randInt(0, spawners.length - 1)];
+      spawner.spawnBlorp();
+    }
   }
 
   getSpawnDelay(): number {
