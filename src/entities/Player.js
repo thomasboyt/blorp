@@ -1,9 +1,9 @@
 /* @flow */
 
+var _ = require('lodash');
+
 var Entity = require('./Entity');
-var Block = require('./tiles/Block');
 var Ladder = require('./tiles/Ladder');
-var Platform = require('./tiles/Platform');
 var Spikes = require('./tiles/Spikes');
 var TimerExtendPickup = require('./TimerExtendPickup');
 
@@ -11,27 +11,21 @@ var Blorp = require('./Blorp');
 var Blat = require('./Blat');
 var Bullet = require('./Bullet');
 
-var rectangleIntersection = require('../lib/math').rectangleIntersection;
 var SpriteSheet = require('../lib/SpriteSheet');
 var AnimationManager = require('../lib/AnimationManager');
+var PlatformerPhysicsEntity = require('./PlatformerPhysicsEntity');
 
 var WALK_STATE = 'walk';
 var LADDER_STATE = 'ladder';
 var DEAD_STATE = 'dead';
 
-class Player extends Entity {
+class Player extends PlatformerPhysicsEntity {
   img: Image;
   anim: AnimationManager;
 
-  grounded: boolean;
   facingLeft: boolean;
 
   state: string;
-
-  vec: {
-    x: number;
-    y: number;
-  };
 
   init(settings: any) {
     this.center = settings.center;
@@ -255,56 +249,8 @@ class Player extends Entity {
   }
 
   collision(other: Entity) {
-    var intersect;
-
     if (this.state === WALK_STATE) {
-
-      if (other instanceof Block) {
-        intersect = rectangleIntersection(this, other);
-
-        if (intersect.w > intersect.h) {
-
-          // Player is falling into a block from above
-          if (intersect.fromAbove && other.isEdgeCollidable.top) {
-            this.center.y -= intersect.h;
-
-            // Zero out player velocity when they hit the block, and set grounded
-            if (this.vec.y > 0) {
-              this.vec.y = 0;
-              this.grounded = true;
-            }
-
-          // Player is rising into a block from below
-          } else if (other.isEdgeCollidable.bottom) {
-            this.center.y += intersect.h;
-
-            // Zero out player velocity when they bump their head
-            if (this.vec.y < 0) {
-              this.vec.y = 0;
-            }
-          }
-
-        } else {
-          // Player is colliding with the block from the left
-          if (intersect.fromLeft && other.isEdgeCollidable.left) {
-            this.center.x -= intersect.w;
-
-          // Player is colliding with the block from the right
-          } else if (other.isEdgeCollidable.right) {
-            this.center.x += intersect.w;
-          }
-        }
-
-      } else if (other instanceof Platform) {
-        intersect = rectangleIntersection(this, other);
-
-        // Platforms can only be collided with from the top
-        if (intersect.w > intersect.h && intersect.fromAbove && other.isEdgeCollidable.top) {
-          this.center.y -= intersect.h;
-          this.vec.y = 0;
-          this.grounded = true;
-        }
-      }
+      this.handlePlatformerCollision(other);
     }
 
     if (other instanceof Blorp || other instanceof Spikes || other instanceof Blat) {

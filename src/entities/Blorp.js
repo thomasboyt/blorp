@@ -5,11 +5,11 @@ var Block = require('./tiles/Block');
 var Platform = require('./tiles/Platform');
 var Player = require('./Player');
 var Bullet = require('./Bullet');
-var rectangleIntersection = require('../lib/math').rectangleIntersection;
 var SpriteSheet = require('../lib/SpriteSheet');
 var AnimationManager = require('../lib/AnimationManager');
+var PlatformerPhysicsEntity = require('./PlatformerPhysicsEntity');
 
-class Blorp extends Entity {
+class Blorp extends PlatformerPhysicsEntity  {
   img: Image;
   anim: AnimationManager;
 
@@ -114,36 +114,7 @@ class Blorp extends Entity {
   }
 
   collision(other: Entity) {
-    var intersect = rectangleIntersection(this, other);
-
-    // TODO: replace with nicer code from Player
-    if (other instanceof Block) {
-      if (intersect.w > intersect.h) {
-        // do y correction
-        if (intersect.fromAbove) {
-          this.center.y -= intersect.h;
-
-          // prevent "sticky corners" while ascending
-          if (this.vec.y > 0) {
-            this.grounded = true;
-            this.vec.y = 0;
-          }
-        } else {
-          this.center.y += Math.ceil(intersect.h);
-          this.vec.y = 0;
-        }
-      } else if (intersect.h > intersect.w) {
-        // do x correction
-        if (intersect.fromLeft && other.isEdgeCollidable.left) {
-          this.center.x -= intersect.w;
-          this.walkingRight = false;
-        } else if (other.isEdgeCollidable.right) {
-          this.center.x += intersect.w;
-          this.walkingRight = true;
-        }
-        this.vec.x = 0;
-      }
-    }
+    this.handlePlatformerCollision(other);
 
     if (other instanceof Bullet) {
       this.game.c.entities.destroy(this);
