@@ -8,7 +8,7 @@ var StateMachine = require('javascript-state-machine');
 var addRegister = require('./lib/addRegister');
 var AudioManager = require('./lib/AudioManager');
 var AssetPreloader = require('./lib/AssetPreloader');
-var setupFullscreen = require('./lib/setupPause');
+var setupFullscreen = require('./lib/setupFullscreen');
 var setupPause = require('./lib/setupPause');
 
 var assets = require('./config/assets');
