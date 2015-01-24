@@ -23,6 +23,7 @@ module.exports = {
     'blatSheet': require('../../assets/images/blat_sheet.png')
   },
   levels: {
-    'arena': require('../../assets/levels/arena.tmx')
+    'arena': require('../../assets/levels/arena.tmx'),
+    '2': require('../../assets/levels/2.tmx')
   }
 };

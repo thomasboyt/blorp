@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="20" tileheight="20" nextobjectid="6">
+ <tileset firstgid="1" name="Blorp" tilewidth="20" tileheight="20">
+  <tile id="0">
+   <properties>
+    <property name="Entity" value="Block"/>
+   </properties>
+   <image width="20" height="20" source="../images/block.png"/>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="Entity" value="Player"/>
+   </properties>
+   <image width="20" height="20" source="../images/player.png"/>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="Entity" value="Ladder"/>
+   </properties>
+   <image width="20" height="20" source="../images/ladder.png"/>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="Entity" value="Platform"/>
+   </properties>
+   <image width="20" height="20" source="../images/platform.png"/>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="Entity" value="Spawner"/>
+   </properties>
+   <image width="20" height="20" source="../images/exit_door.png"/>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="Entity" value="Spikes"/>
+   </properties>
+   <image width="20" height="20" source="../images/spikes.png"/>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 1" width="20" height="20">
+  <data encoding="csv">
+1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,1,1,1,1,1,4,0,0,4,1,1,1,1,1,0,0,1,
+1,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,1,
+1,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,1,
+1,0,0,1,1,1,1,1,0,0,0,0,1,1,1,1,1,0,0,1,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,1,1,1,1,1,4,4,4,4,0,0,0,0,0,0,0,1,
+1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+</data>
+ </layer>
+ <layer name="Tile Layer 2" width="20" height="20">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,3,0,0,3,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,3,0,0,3,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,3,0,0,3,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,3,0,0,3,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,3,0,0,3,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,3,0,0,3,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,3,0,0,3,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,3,0,0,3,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,3,3,0,1,1,1,1,1,0,0,0,
+0,0,0,0,0,0,0,1,0,3,3,0,1,0,0,0,1,0,0,0,
+0,0,0,0,0,0,0,1,0,3,3,0,1,0,0,0,1,0,0,0,
+0,0,0,0,0,0,0,1,0,3,3,0,1,1,1,1,1,0,0,0,
+0,0,0,0,0,0,0,0,0,3,3,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,3,3,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup name="Object Layer 1">
+  <object id="1" type="Player" gid="2" x="189" y="259"/>
+  <object id="2" type="Spawner" gid="5" x="320" y="100">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="3" type="Spawner" gid="5" x="320" y="260">
+   <properties>
+    <property name="direction" value="left"/>
+   </properties>
+  </object>
+  <object id="4" type="Spawner" gid="5" x="60" y="260"/>
+  <object id="5" type="Spawner" gid="5" x="60" y="100"/>
+ </objectgroup>
+</map>
