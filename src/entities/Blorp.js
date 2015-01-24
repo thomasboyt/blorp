@@ -28,7 +28,7 @@ class Blorp extends PlatformerPhysicsEntity  {
     this.zindex = 105;
 
     this.grounded = true;
-    this.walkingRight = settings.direction === 'left' ? - 1 : 1;
+    this.walkingRight = settings.direction !== 'left';
 
     var sheet = new SpriteSheet(this.game.assets.images.blorpSheet, this.size.x, this.size.y);
 
