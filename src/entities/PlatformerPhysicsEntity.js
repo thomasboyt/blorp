@@ -22,32 +22,30 @@ class PlatformerPhysicsEntity extends Entity {
 
       if (intersect.w > intersect.h) {
 
-        // this is falling into a block from above
+        // Self is falling into a block from above
         if (intersect.fromAbove && other.isEdgeCollidable.top) {
           this.center.y -= intersect.h;
 
-          // Zero out this velocity when they hit the block, and set grounded
           if (this.vec.y > 0) {
             this.vec.y = 0;
             this.grounded = true;
           }
 
-        // this is rising into a block from below
+        // Self is rising into a block from below
         } else if (other.isEdgeCollidable.bottom) {
           this.center.y += intersect.h;
 
-          // Zero out this velocity when they bump their head
           if (this.vec.y < 0) {
             this.vec.y = 0;
           }
         }
 
       } else {
-        // this is colliding with the block from the left
+        // Self is colliding with the block from the left
         if (intersect.fromLeft && other.isEdgeCollidable.left) {
           this.center.x -= intersect.w;
 
-        // this is colliding with the block from the right
+        // Self is colliding with the block from the right
         } else if (other.isEdgeCollidable.right) {
           this.center.x += intersect.w;
         }
