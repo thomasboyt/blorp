@@ -15,25 +15,26 @@ class UI extends Entity {
   }
 
   drawAttract(ctx: any) {
-    ctx.font = '24px "Press Start 2P"';
-    ctx.textAlign = "center";
+    ctx.textAlign = 'center';
 
-    ctx.fillText('BLORP!', 200, 200);
+    ctx.font = '40px "Press Start 2P"';
+    ctx.fillText('BLORP!', 210, 150);
+
+    var offset = 250;
 
     ctx.font = '16px "Press Start 2P"';
-    ctx.fillText("press space", 200, 220);
+    ctx.fillText('arrows move', 200, offset);
+    ctx.fillText('z jumps / x shoots', 200, offset + 20);
+    ctx.fillText("press space to start", 200, offset + 40);
   }
 
   drawPlaying(ctx: any) {
     this._drawFps(ctx);
 
-    ctx.font = '8px "Press Start 2P"';
     ctx.textAlign = 'center';
-    ctx.fillText('arrows move / z jumps / x shoots', 200, 40);
-
     ctx.font = '24px "Press Start 2P"';
     var time = Math.ceil(this.game.timeLeft / 1000);
-    ctx.fillText(time, 200, 80);
+    ctx.fillText(time, 200, 50);
   }
 
   drawDead(ctx: any) {
