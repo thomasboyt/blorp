@@ -14,6 +14,8 @@ class PlatformerPhysicsEntity extends Entity {
     y: number;
   };
 
+  afterBlockCollision(block: Block, intersect) {}
+
   handlePlatformerCollision(other: Entity) {
     var intersect;
 
@@ -50,6 +52,9 @@ class PlatformerPhysicsEntity extends Entity {
           this.center.x += intersect.w;
         }
       }
+
+      this.afterBlockCollision(other, intersect);
+
     } else if (other instanceof Platform) {
       intersect = rectangleIntersection(this, other);
 
