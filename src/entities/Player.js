@@ -30,6 +30,7 @@ class Player extends PlatformerPhysicsEntity {
   init(settings: any) {
     this.center = settings.center;
     this.size = {x: 11, y: 20};
+
     this.vec = {x: 0, y: 0};
     this.zindex = 100;
 
@@ -70,6 +71,19 @@ class Player extends PlatformerPhysicsEntity {
         frameLengthMs: 200
       }
     });
+  }
+
+  getFootBox(): any  { // BoundingBox, see lib/math.js
+    return {
+      center: {
+        x: this.center.x,
+        y: this.center.y + 8
+      },
+      size: {
+        x: this.size.x,
+        y: 4
+      }
+    };
   }
 
   jump() {

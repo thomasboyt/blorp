@@ -15,12 +15,17 @@ type Intersection = {
   fromLeft: boolean;
 }
 
-function sidesForEntity(entity: Entity): SidePositions {
+type BoundingBox = {
+  size: Coordinates;
+  center: Coordinates;
+}
+
+function sidesForBoundingBox(boundingBox: BoundingBox): SidePositions {
   return {
-    left: entity.center.x - entity.size.x / 2,
-    right: entity.center.x + entity.size.x / 2,
-    top: entity.center.y - entity.size.y / 2,
-    bottom: entity.center.y + entity.size.y / 2
+    left: boundingBox.center.x - boundingBox.size.x / 2,
+    right: boundingBox.center.x + boundingBox.size.x / 2,
+    top: boundingBox.center.y - boundingBox.size.y / 2,
+    bottom: boundingBox.center.y + boundingBox.size.y / 2
   };
 }
 
@@ -32,10 +37,10 @@ function min(x: number, y: number): number {
   return x < y ? x : y;
 }
 
-function rectangleIntersection(self: Entity, other: Entity): Intersection {
+function rectangleIntersection(self: BoundingBox, other: BoundingBox): Intersection {
   // returns the size of the intersection between two rectangles as {w, h}
-  var r1 = sidesForEntity(self);
-  var r2 = sidesForEntity(other);
+  var r1 = sidesForBoundingBox(self);
+  var r2 = sidesForBoundingBox(other);
   var sides = {
     left: max(r1.left, r2.left),
     right: min(r1.right, r2.right),
@@ -66,7 +71,6 @@ function randInt(min: number, max: number): number {
 }
 
 module.exports = {
-  sidesForEntity,
   rectangleIntersection,
   calcVector,
   randInt,

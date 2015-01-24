@@ -62,6 +62,8 @@ class Game {
 
   // TODO: move this into a cheats hash?
   godMode: boolean;
+  disableSpawner: boolean;
+  disableTimer: boolean;
 
   ui: UI;
   currentWorld: World;
@@ -113,8 +115,13 @@ class Game {
     this.ui = this.createEntity(UI, {});
 
     if (getParameterByName('godmode')) {
-      console.log('enabled godmode');
       this.godMode = true;
+    }
+    if (getParameterByName('disablespawner')) {
+      this.disableSpawner = true;
+    }
+    if (getParameterByName('disabletimer')) {
+      this.disableTimer = true;
     }
 
     this.preloader.load().done((assets) => {
@@ -190,10 +197,14 @@ class Game {
     }
 
     if (this.fsm.is('playing')) {
-      this.timeLeft -= dt;
+      if (!this.disableTimer) {
+        this.timeLeft -= dt;
+        this.pickupSpawner.update(dt);
+      }
 
-      this.enemySpawner.update(dt);
-      this.pickupSpawner.update(dt);
+      if (!this.disableSpawner) {
+        this.enemySpawner.update(dt);
+      }
 
       if (this.timeLeft < 0) {
         this.died();

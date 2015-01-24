@@ -56,10 +56,14 @@ class PlatformerPhysicsEntity extends Entity {
       this.afterBlockCollision(other, intersect);
 
     } else if (other instanceof Platform) {
-      intersect = rectangleIntersection(this, other);
+      if (this.getFootBox) {
+        intersect = rectangleIntersection(this.getFootBox(), other);
+      } else {
+        intersect = rectangleIntersection(this, other);
+      }
 
       // Platforms can only be collided with from the top
-      if (intersect.w > intersect.h && intersect.fromAbove && other.isEdgeCollidable.top) {
+      if (intersect.w > intersect.h && intersect.fromAbove && other.isEdgeCollidable.top && this.vec.y > 0) {
         this.center.y -= intersect.h;
         this.vec.y = 0;
         this.grounded = true;

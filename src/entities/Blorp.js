@@ -113,7 +113,7 @@ class Blorp extends PlatformerPhysicsEntity  {
     sprite.draw(ctx, destX, destY);
   }
 
-  afterBlockCollision(block: Block, intersect) {
+  afterBlockCollision(block: Block, intersect: any) {
     if (intersect.h > intersect.w) {
       if (intersect.fromLeft && block.isEdgeCollidable.left) {
         this.walkingRight = false;
