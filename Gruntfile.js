@@ -1,3 +1,5 @@
+var webpack = require('webpack');
+
 module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
 
@@ -9,7 +11,12 @@ module.exports = function(grunt) {
     },
 
     webpack: {
-      main: require('./webpack.config'),
+      options: require('./webpack.config'),
+      production: {
+        plugins: [
+          new webpack.optimize.UglifyJsPlugin()
+        ]
+      }
     },
 
     sftp: {
@@ -23,7 +30,7 @@ module.exports = function(grunt) {
         createDirectories: true
       },
 
-      game: {
+      code: {
         files: {
           './': ['build/**', '!build/assets/**']
         }
@@ -52,10 +59,10 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('dist', ['clean:build', 'webpack', 'copy:index']);
+  grunt.registerTask('dist', ['clean:build', 'webpack:production', 'copy:index']);
 
-  grunt.registerTask('deploy:all', ['dist', 'sftp']);
-  grunt.registerTask('deploy', ['dist', 'sftp:game']);
+  grunt.registerTask('deploy:code', ['dist', 'sftp:code']);
+  grunt.registerTask('deploy', ['dist', 'sftp']);
 
   grunt.registerTask('itch', ['dist', 'zip']);
 };
