@@ -143,9 +143,9 @@ class Game {
 
   start() {
     this.fsm.start();
-    var level = getParameterByName('level') || 'arena';
-    this.session = new Session(this);
-    this.session.startLevel(level);
+    var level = parseInt(getParameterByName('level') || '1', 10);
+    this.session = new Session(this, level);
+    this.session.start();
   }
 
   destroyAll(type) {
@@ -160,6 +160,7 @@ class Game {
   }
 
   ended() {
+    // TODO: Where should this go? Probably not here.
     this.destroyAll(Blorp);
     this.destroyAll(Blat);
     this.destroyAll(FuelPickup);

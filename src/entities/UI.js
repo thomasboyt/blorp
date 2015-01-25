@@ -4,14 +4,9 @@
  */
 
 var Entity = require('./Entity');
-var AvgTick = require('../lib/AvgTick');
-
 class UI extends Entity {
-  avgTick: AvgTick;
-
   init(settings: any) {
     this.zindex = 999;
-    this.avgTick = new AvgTick(100);
   }
 
   drawAttract(ctx: any) {
@@ -29,16 +24,7 @@ class UI extends Entity {
   }
 
   drawPlaying(ctx: any) {
-    this._drawFps(ctx);
-
-    if (this.game.session.levelEnded) {
-      ctx.textAlign = 'center';
-      ctx.font = '32px "Press Start 2P"';
-      ctx.fillText('you escaped', 200, 220);
-
-      ctx.font = '16px "Press Start 2P"';
-      ctx.fillText('press space to continue', 200, 240);
-    } else {
+    if (this.game.session.isInLevel()) {
       this._drawFuelBar(ctx);
     }
   }
@@ -81,15 +67,6 @@ class UI extends Entity {
     ctx.fillRect(x, y, barWidth, height);
   }
 
-  _drawFps(ctx: any) {
-    var fps = Math.round(1000 / this.avgTick.get());
-
-    ctx.fillStyle = 'black';
-    ctx.font = '8px "Press Start 2P"';
-    ctx.textAlign = 'right';
-    ctx.fillText(fps, this.game.width - 5, 10);
-  }
-
   draw(ctx: any) {
     ctx.strokeStyle = 'black';
     ctx.fillStyle = 'black';
@@ -114,10 +91,6 @@ class UI extends Entity {
       this.drawLoading(ctx);
     }
 
-  }
-
-  update(dt: number) {
-    this.avgTick.update(dt);
   }
 }
 

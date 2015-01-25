@@ -4,6 +4,7 @@ var Entity = require('./Entity');
 
 class Ship extends Entity {
   img: Image;
+  flyingImg: Image;
   flying: boolean;
 
   init(settings: any) {
