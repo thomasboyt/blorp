@@ -14,10 +14,10 @@ class TimerExtendPickup extends Entity {
 
   init(settings: any) {
     this.center = settings.center;
-    this.size = {x: 15, y: 15};
+    this.size = {x: 10, y: 15};
     this.zindex = this.game.config.zIndexes.timeExtend;
 
-    this.img = this.game.assets.images.clock;
+    this.img = this.game.assets.images.fuel;
 
     this.timeToLive = settings.timeToLive;
     this.destroyTimer = new Timer(settings.timeToLive);
