@@ -6,6 +6,7 @@
 var q = require('q');
 var _ = require('lodash');
 var Level = require('../Level');
+var Tileset = require('../Tileset');
 
 type AssetMap = {
   images: {
@@ -29,6 +30,7 @@ type AssetCfg = {
   levels: ?{
     [key:string]: string
   };
+  tileset: string;
 }
 
 class AssetPreloader {
@@ -95,8 +97,10 @@ class AssetPreloader {
       xhr.send();
     });
 
+    var tileset = new Tileset(this.assetCfg.tileset);
+
     _.each(this.assetCfg.levels, (content, name) => {
-      this.assets.levels[name] = new Level(content);
+      this.assets.levels[name] = new Level(content, tileset);
       onAssetLoaded();
     });
 

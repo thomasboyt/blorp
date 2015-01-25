@@ -1,6 +1,7 @@
 /* @flow */
 
 var Entity = require('./entities/Entity');
+var Tileset = require('./Tileset');
 
 var ENTITY_TYPES = {
   'Block': require('./entities/tiles/Block'),
@@ -24,15 +25,15 @@ type StringMap = {
 };
 
 class Level {
-  tileNames: TileIndexEntityMap;
+  tileset: Tileset;
   tileLayers: Array<TileMap>;  // </>
   objects: Array<Object>; // </>
 
-  constructor(level: string) {
+  constructor(level: string, tileset: Tileset) {
     var parser = new DOMParser();
     var doc = parser.parseFromString(level, 'application/xml');
 
-    this.tileNames = this._parseTileset(doc);
+    this.tileset = tileset;
     this.tileLayers = this._parseTileLayers(doc);
     this.objects = this._parseObjects(doc);
   }
@@ -46,7 +47,7 @@ class Level {
   }
 
   getEntityTypeForTile(tileNum: number): any {
-    var entityName = this.tileNames[tileNum - 1];
+    var entityName = this.tileset.getEntityNameForId(tileNum - 1);
     return this._getEntityForName(entityName);
   }
 
@@ -54,19 +55,6 @@ class Level {
     var tile = this.tileLayers[layer][y][x];
     if (tile === 0) { return null; }
     return this.getEntityTypeForTile(tile);
-  }
-
-  _parseTileset(doc: Document): TileIndexEntityMap {
-    var tiles = doc.querySelectorAll('tileset tile');
-
-    var tileNames = {};
-    for (var i = 0; i < tiles.length; i++) {
-      var id = tiles[i].getAttribute('id');
-      var prop = tiles[i].querySelector('property[name="Entity"]');
-      tileNames[id] = prop.getAttribute('value');
-    }
-
-    return tileNames;
   }
 
   _parseTileLayers(doc: Document): Array<TileMap> {  // </>

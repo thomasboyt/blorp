@@ -1,49 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="20" tileheight="20" nextobjectid="12">
- <tileset firstgid="1" name="Blorp" tilewidth="40" tileheight="20">
-  <tile id="0">
-   <properties>
-    <property name="Entity" value="Block"/>
-   </properties>
-   <image width="20" height="20" source="../images/block.png"/>
-  </tile>
-  <tile id="1">
-   <properties>
-    <property name="Entity" value="Player"/>
-   </properties>
-   <image width="20" height="20" source="../images/player.png"/>
-  </tile>
-  <tile id="2">
-   <properties>
-    <property name="Entity" value="Ladder"/>
-   </properties>
-   <image width="20" height="20" source="../images/ladder.png"/>
-  </tile>
-  <tile id="3">
-   <properties>
-    <property name="Entity" value="Platform"/>
-   </properties>
-   <image width="20" height="20" source="../images/platform.png"/>
-  </tile>
-  <tile id="4">
-   <properties>
-    <property name="Entity" value="Spawner"/>
-   </properties>
-   <image width="20" height="20" source="../images/exit_door.png"/>
-  </tile>
-  <tile id="5">
-   <properties>
-    <property name="Entity" value="Spikes"/>
-   </properties>
-   <image width="20" height="20" source="../images/spikes.png"/>
-  </tile>
-  <tile id="6">
-   <properties>
-    <property name="Entity" value="Ship"/>
-   </properties>
-   <image width="40" height="20" source="../images/ship.png"/>
-  </tile>
- </tileset>
+ <tileset firstgid="1" source="../tiles.tsx"/>
  <layer name="Tile Layer 1" width="20" height="20">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,

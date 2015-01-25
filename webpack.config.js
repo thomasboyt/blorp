@@ -55,7 +55,7 @@ module.exports = {
       },
 
       {
-        test: /(?:\.tmx$)/,
+        test: /(?:\.tmx$|\.tsx$)/,
         loader: 'raw-loader'
       }
     ]

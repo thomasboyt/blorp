@@ -25,6 +25,9 @@ module.exports = {
     'exitShip': require('../../assets/images/ship.png'),
     'flyingShip': require('../../assets/images/ship_flying.png'),
   },
+
+  tileset: require('../../assets/tiles.tsx'),
+
   levels: {
     'arena': require('../../assets/levels/arena.tmx'),
     '2': require('../../assets/levels/2.tmx')
