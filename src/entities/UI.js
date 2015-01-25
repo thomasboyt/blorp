@@ -25,18 +25,17 @@ class UI extends Entity {
 
   drawPlaying(ctx: any) {
     if (this.game.session.isInLevel()) {
-      this._drawFuelBar(ctx);
+      this._drawFuel(ctx);
     }
   }
 
-  _drawFuelBar(ctx: any) {
-    var fuelNeeded = this.game.session.fuelNeeded;
-    var fuel = this.game.session.currentFuel;
+  _drawFuel(ctx: any) {
+    var img = this.game.assets.images.fuel;
+    ctx.drawImage(img, 25, 23, 16, 24);
 
-    var percent = fuel / fuelNeeded;
-    percent = (percent > 1) ? 1 : percent;
-
-    this._drawBar(ctx, percent, 150, 25, 100, 20);
+    ctx.font = '16px "Press Start 2P"';
+    var fuelLeft = this.game.session.fuelNeeded - this.game.session.currentFuel;
+    ctx.fillText(fuelLeft, 45, 48);
   }
 
   drawDead(ctx: any) {
