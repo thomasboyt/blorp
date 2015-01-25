@@ -15,16 +15,14 @@ var assets = require('./config/assets');
 var config = require('./config/game');
 var Level = require('./Level');
 
-var EnemySpawner = require('./spawners/EnemySpawner');
-var PickupSpawner = require('./spawners/PickupSpawner');
-
 var Entity = require('./entities/Entity');
 var UI = require('./entities/UI');
-var World = require('./entities/World');
 var Player = require('./entities/Player');
 var Blorp = require('./entities/Blorp');
 var Blat = require('./entities/Blat');
-var TimerExtendPickup = require('./entities/TimerExtendPickup');
+var FuelPickup = require('./entities/FuelPickup');
+
+var Session = require('./Session');
 
 function getParameterByName(name) {
   var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
@@ -57,18 +55,13 @@ class Game {
   tileWidth: number;
   tileHeight: number;
 
-  // TODO: move this into a Session() object?
-  timeLeft: number;
-
   // TODO: move this into a cheats hash?
   godMode: boolean;
   disableSpawner: boolean;
-  disableTimer: boolean;
+
+  session: Session;
 
   ui: UI;
-  currentWorld: World;
-  enemySpawner: EnemySpawner;
-  pickupSpawner: PickupSpawner;
 
   constructor() {
     this.audioManager = new AudioManager();
@@ -120,9 +113,6 @@ class Game {
     if (getParameterByName('disablespawner')) {
       this.disableSpawner = true;
     }
-    if (getParameterByName('disabletimer')) {
-      this.disableTimer = true;
-    }
 
     this.preloader.load().done((assets) => {
       setTimeout(() => {
@@ -153,17 +143,9 @@ class Game {
 
   start() {
     this.fsm.start();
-
-    this.timeLeft = this.config.startingTimeMs;
-
     var level = getParameterByName('level') || 'arena';
-
-    this.currentWorld = this.createEntity(World, {
-      level: this.assets.levels[level]
-    });
-
-    this.enemySpawner = new EnemySpawner(this);
-    this.pickupSpawner = new PickupSpawner(this);
+    this.session = new Session(this);
+    this.session.startLevel(level);
   }
 
   destroyAll(type) {
@@ -174,10 +156,14 @@ class Game {
 
   died() {
     this.fsm.died();
+    this.ended();
+  }
+
+  ended() {
     this.destroyAll(Blorp);
     this.destroyAll(Blat);
-    this.destroyAll(TimerExtendPickup);
-    this.currentWorld.destroy();
+    this.destroyAll(FuelPickup);
+    this.session.currentWorld.destroy();
   }
 
 
@@ -197,18 +183,7 @@ class Game {
     }
 
     if (this.fsm.is('playing')) {
-      if (!this.disableTimer) {
-        this.timeLeft -= dt;
-        this.pickupSpawner.update(dt);
-      }
-
-      if (!this.disableSpawner) {
-        this.enemySpawner.update(dt);
-      }
-
-      if (this.timeLeft < 0) {
-        this.died();
-      }
+      this.session.update(dt);
     }
   }
 }

@@ -78,15 +78,21 @@ class World extends Entity {
     var tx = Math.floor(from.x / this.game.tileWidth);
     var ty = Math.floor(from.y / this.game.tileWidth);
 
-    var playerCenter = this.getPlayer().center;
-    var ptx = Math.floor(playerCenter.x / this.game.tileWidth);
-    var pty = Math.floor(playerCenter.y / this.game.tileHeight);
+    var player = this.getPlayer();
 
-    var path = this.game.currentWorld.findPath({x: tx, y: ty}, {x: ptx, y: pty});
+    if (!player) {
+      // player escaped, so use previous player coords
+      return this.findPath({x: tx, y: ty}, {x: this._lastPtx, y: this._lastPty});
+    }
+
+    var ptx = Math.floor(player.center.x / this.game.tileWidth);
+    var pty = Math.floor(player.center.y / this.game.tileHeight);
+
+    var path = this.findPath({x: tx, y: ty}, {x: ptx, y: pty});
 
     if (path.length === 0) {
       // No path could be found, so use previous player coords
-      path = this.game.currentWorld.findPath({x: tx, y: ty}, {x: this._lastPtx, y: this._lastPty});
+      path = this.findPath({x: tx, y: ty}, {x: this._lastPtx, y: this._lastPty});
     } else {
       this._lastPtx = ptx;
       this._lastPty = pty;

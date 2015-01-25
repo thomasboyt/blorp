@@ -1,15 +1,17 @@
 /* @flow */
 
 var _ = require('lodash');
+var Maths = require('coquette').Collider.Maths;
 
 var Entity = require('./Entity');
 var Ladder = require('./tiles/Ladder');
 var Spikes = require('./tiles/Spikes');
-var TimerExtendPickup = require('./TimerExtendPickup');
+var FuelPickup = require('./FuelPickup');
 
 var Blorp = require('./Blorp');
 var Blat = require('./Blat');
 var Bullet = require('./Bullet');
+var Ship = require('./Ship');
 
 var SpriteSheet = require('../lib/SpriteSheet');
 var AnimationManager = require('../lib/AnimationManager');
@@ -123,11 +125,22 @@ class Player extends PlatformerPhysicsEntity {
 
     // Up button has several meanings depending on context (what you're standing in front of)
     if (this.game.c.inputter.isPressed(this.game.c.inputter.UP_ARROW)) {
-      var tileBehind = this.game.currentWorld.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
+      var tileBehind = this.game.session.currentWorld.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
 
       if (tileBehind instanceof Ladder) {
         this._enterLadder(dt, tileBehind);
         return;
+      }
+
+      // Standing in front of ship - fly away!
+      if (this.game.session.exitEnabled) {
+        var exit = this.game.c.entities.all(Ship)[0];
+
+        if (Maths.unrotatedRectanglesIntersecting(this, exit)) {
+          this.game.session.escape();
+          this.game.c.entities.destroy(this);
+          return;
+        }
       }
     }
 
@@ -144,7 +157,7 @@ class Player extends PlatformerPhysicsEntity {
     if (this.game.c.inputter.isPressed(this.game.c.inputter.DOWN_ARROW)) {
       if (this.grounded) {
         var yBelow = this.center.y + this.game.tileHeight;
-        var tileBelow = this.game.currentWorld.getTileAt(Ladder.layerNum, this.center.x, yBelow);
+        var tileBelow = this.game.session.currentWorld.getTileAt(Ladder.layerNum, this.center.x, yBelow);
 
         if (tileBelow instanceof Ladder) {
           this._enterLadder(dt, tileBelow, true);
@@ -236,10 +249,10 @@ class Player extends PlatformerPhysicsEntity {
   _checkOnLadder(): boolean {
     // Check that player's bottom edge is on a ladder
     var y = this.center.y + this.size.y / 2;
-    var bottomEdgeTile = this.game.currentWorld.getTileAt(Ladder.layerNum, this.center.x, y);
+    var bottomEdgeTile = this.game.session.currentWorld.getTileAt(Ladder.layerNum, this.center.x, y);
 
     // Check that the player's center is on a ladder
-    var centerTile = this.game.currentWorld.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
+    var centerTile = this.game.session.currentWorld.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
 
     return (bottomEdgeTile instanceof Ladder && centerTile instanceof Ladder);
   }
@@ -282,10 +295,11 @@ class Player extends PlatformerPhysicsEntity {
       }
     }
 
-    if (other instanceof TimerExtendPickup) {
-      this.game.timeLeft += other.timeAdded;
+    if (other instanceof FuelPickup) {
+      this.game.session.addFuel(1);
       this.game.c.entities.destroy(other);
     }
+
   }
 }
 

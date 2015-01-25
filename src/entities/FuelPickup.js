@@ -6,7 +6,6 @@ var Timer = require('../lib/Timer');
 class TimerExtendPickup extends Entity {
   img: Image;
 
-  timeAdded: number;
   timeToLive: number;
   destroyTimer: Timer;
 
@@ -20,7 +19,6 @@ class TimerExtendPickup extends Entity {
 
     this.img = this.game.assets.images.clock;
 
-    this.timeAdded = settings.timeAdded;
     this.timeToLive = settings.timeToLive;
     this.destroyTimer = new Timer(settings.timeToLive);
 

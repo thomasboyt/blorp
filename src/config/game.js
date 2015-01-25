@@ -28,11 +28,23 @@ module.exports = {
   startingTimeMs: 20 * 1000,
 
   zIndexes: {
+    exit: 99,
     spawnPoint: 100,
     player: 101,
     blat: 102,
     blorp: 102,
     bullet: 103,
-    timeExtend: 104
-  }
+    timeExtend: 104,
+    flyingShip: 200
+  },
+
+  pointValues: {
+    blorp: 100,
+    blat: 150
+  },
+
+  levelOrder: [
+    '2',
+    'arena'
+  ]
 };

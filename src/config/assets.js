@@ -20,7 +20,10 @@ module.exports = {
 
     'playerSheet': require('../../assets/images/player_sheet.png'),
     'blorpSheet': require('../../assets/images/blorp_sheet.png'),
-    'blatSheet': require('../../assets/images/blat_sheet.png')
+    'blatSheet': require('../../assets/images/blat_sheet.png'),
+
+    'exitShip': require('../../assets/images/ship.png'),
+    'flyingShip': require('../../assets/images/ship_flying.png'),
   },
   levels: {
     'arena': require('../../assets/levels/arena.tmx'),

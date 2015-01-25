@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="Blorp" tilewidth="20" tileheight="20">
+<tileset name="Blorp" tilewidth="40" tileheight="20">
  <tile id="0">
   <properties>
    <property name="Entity" value="Block"/>
@@ -35,5 +35,11 @@
    <property name="Entity" value="Spikes"/>
   </properties>
   <image width="20" height="20" source="images/spikes.png"/>
+ </tile>
+ <tile id="6">
+  <properties>
+   <property name="Entity" value="Ship"/>
+  </properties>
+  <image width="40" height="20" source="images/ship.png"/>
  </tile>
 </tileset>

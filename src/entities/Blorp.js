@@ -59,23 +59,25 @@ class Blorp extends PlatformerPhysicsEntity  {
     var walkDirection = this.walkingRight ? 1 : -1;
 
     // if player is within 3 x tiles and 1 y tile, walk towards player
-    var playerCenter = this.game.currentWorld.getPlayer().center;
+    var player = this.game.session.currentWorld.getPlayer();
 
-    var xDiff = playerCenter.x - this.center.x;
-    var yDiff = playerCenter.y - this.center.y;
+    if (player) {
+      var xDiff = player.center.x - this.center.x;
+      var yDiff = player.center.y - this.center.y;
 
-    if (Math.abs(xDiff) < 60 && Math.abs(yDiff) < 25) {
-      walkDirection = xDiff > 0 ? 1 : -1;
+      if (Math.abs(xDiff) < 60 && Math.abs(yDiff) < 25) {
+        walkDirection = xDiff > 0 ? 1 : -1;
+      }
     }
 
     this.vec.x = walkDirection * spd;
 
     // Check to see if there's a block in front of us, and jump if so
-    var tileInFront = this.game.currentWorld.getTileAt(0, this.center.x + (this.game.tileWidth * walkDirection), this.center.y);
+    var tileInFront = this.game.session.currentWorld.getTileAt(0, this.center.x + (this.game.tileWidth * walkDirection), this.center.y);
 
     if (tileInFront instanceof Block) {
       // Check to make sure there's not a tile above it that can't be reached
-      var tileInFrontAbove = this.game.currentWorld.getTileAt(0,
+      var tileInFrontAbove = this.game.session.currentWorld.getTileAt(0,
         this.center.x + (this.game.tileWidth * walkDirection),
         this.center.y - this.game.tileHeight);
 
@@ -129,6 +131,8 @@ class Blorp extends PlatformerPhysicsEntity  {
     if (other instanceof Bullet) {
       this.game.c.entities.destroy(this);
       this.game.c.entities.destroy(other);
+
+      this.game.session.addPoints(this.game.config.pointValues.blorp);
     }
 
   }

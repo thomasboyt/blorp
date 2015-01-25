@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="20" tileheight="20" nextobjectid="11">
- <tileset firstgid="1" name="Blorp" tilewidth="20" tileheight="20">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="20" tileheight="20" nextobjectid="12">
+ <tileset firstgid="1" name="Blorp" tilewidth="40" tileheight="20">
   <tile id="0">
    <properties>
     <property name="Entity" value="Block"/>
@@ -36,6 +36,12 @@
     <property name="Entity" value="Spikes"/>
    </properties>
    <image width="20" height="20" source="../images/spikes.png"/>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="Entity" value="Ship"/>
+   </properties>
+   <image width="40" height="20" source="../images/ship.png"/>
   </tile>
  </tileset>
  <layer name="Tile Layer 1" width="20" height="20">
@@ -100,5 +106,6 @@
     <property name="direction" value="left"/>
    </properties>
   </object>
+  <object id="11" type="Exit" gid="7" x="180" y="260"/>
  </objectgroup>
 </map>

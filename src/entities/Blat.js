@@ -42,7 +42,7 @@ class Blat extends Entity {
     var spd = this.game.config.blatSpeed * step;
 
     // Find a path from us to the player
-    var path = this.game.currentWorld.findPathToPlayer(this.center);
+    var path = this.game.session.currentWorld.findPathToPlayer(this.center);
 
     // fly toward the next target in the path
     var next = path[1] || path[0];
@@ -81,6 +81,8 @@ class Blat extends Entity {
     if (other instanceof Bullet) {
       this.game.c.entities.destroy(this);
       this.game.c.entities.destroy(other);
+
+      this.game.session.addPoints(this.game.config.pointValues.blat);
     }
   }
 }

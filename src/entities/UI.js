@@ -10,7 +10,7 @@ class UI extends Entity {
   avgTick: AvgTick;
 
   init(settings: any) {
-    this.zindex = 1;
+    this.zindex = 999;
     this.avgTick = new AvgTick(100);
   }
 
@@ -31,10 +31,26 @@ class UI extends Entity {
   drawPlaying(ctx: any) {
     this._drawFps(ctx);
 
-    ctx.textAlign = 'center';
-    ctx.font = '24px "Press Start 2P"';
-    var time = Math.ceil(this.game.timeLeft / 1000);
-    ctx.fillText(time, 200, 50);
+    if (this.game.session.levelEnded) {
+      ctx.textAlign = 'center';
+      ctx.font = '32px "Press Start 2P"';
+      ctx.fillText('you escaped', 200, 220);
+
+      ctx.font = '16px "Press Start 2P"';
+      ctx.fillText('press space to continue', 200, 240);
+    } else {
+      this._drawFuelBar(ctx);
+    }
+  }
+
+  _drawFuelBar(ctx: any) {
+    var fuelNeeded = this.game.session.fuelNeeded;
+    var fuel = this.game.session.currentFuel;
+
+    var percent = fuel / fuelNeeded;
+    percent = (percent > 1) ? 1 : percent;
+
+    this._drawBar(ctx, percent, 150, 25, 100, 20);
   }
 
   drawDead(ctx: any) {
@@ -48,14 +64,17 @@ class UI extends Entity {
   }
 
   drawLoading(ctx: any) {
-    this._drawLoadingBar(ctx, 150, 200, 100, 20);
+    this._drawLoadingBar(ctx);
   }
 
-  _drawLoadingBar(ctx: any, x: number, y: number, width: number, height: number) {
+  _drawLoadingBar(ctx: any) {
     var numTotal = this.game.preloader.numTotal;
     var numLoaded = this.game.preloader.numLoaded;
 
-    var fillPercent = numLoaded / numTotal;
+    this._drawBar(ctx, numLoaded / numTotal, 150, 200, 100, 20);
+  }
+
+  _drawBar(ctx: any, fillPercent: number, x: number, y: number, width: number, height: number) {
     var barWidth = width * fillPercent;
 
     ctx.strokeRect(x, y, width, height);
