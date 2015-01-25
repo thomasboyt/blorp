@@ -35,7 +35,10 @@ class UI extends Entity {
 
     ctx.font = '16px "Press Start 2P"';
     var fuelLeft = this.game.session.fuelNeeded - this.game.session.currentFuel;
-    ctx.fillText(fuelLeft, 45, 48);
+    if (fuelLeft === 0) {
+      fuelLeft = 'FUELED!';
+    }
+    ctx.fillText(fuelLeft, 50, 48);
   }
 
   drawDead(ctx: any) {
