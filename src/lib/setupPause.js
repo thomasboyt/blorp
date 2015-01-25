@@ -7,13 +7,37 @@
 
 var isPaused = false;
 
-function setupPause(coquette, keyCode) {
+function drawOverlay(c) {
+  var ctx = c.renderer.getCtx();
+
+  ctx.save();
+
+  ctx.fillStyle = 'rgba(0, 0, 0, .6)';
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+  ctx.fillStyle = 'white';
+  ctx.font = '24px "Press Start 2P"';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('Paused', 200, 200);
+  ctx.font = '16px "Press Start 2P"';
+  ctx.fillText('press p to unpause', 200, 225);
+
+  ctx.restore();
+}
+
+function setupPause(c, keyCode) {
   window.addEventListener('keydown', function(e) {
     if (e.keyCode === keyCode) {
+      // document.querySelector('.pause-overlay').classList.toggle('show');
       if (isPaused) {
-        coquette.ticker.start();
+        c.ticker.start();
       } else {
-        coquette.ticker.stop();
+        c.ticker.stop();
+
+        window.requestAnimationFrame(() => {
+          drawOverlay(c);
+        });
       }
 
       isPaused = !isPaused;
