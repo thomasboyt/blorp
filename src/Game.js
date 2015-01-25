@@ -21,6 +21,7 @@ var Player = require('./entities/Player');
 var Blorp = require('./entities/Blorp');
 var Blat = require('./entities/Blat');
 var FuelPickup = require('./entities/FuelPickup');
+var TitleScreen = require('./entities/TitleScreen');
 
 var Session = require('./Session');
 
@@ -62,6 +63,7 @@ class Game {
   session: Session;
 
   ui: UI;
+  titleScreen: TitleScreen;
 
   constructor() {
     this.audioManager = new AudioManager();
@@ -139,13 +141,16 @@ class Game {
 
     this.assets = assets;
     this.audioManager.setAudioMap(assets.audio);
+    this.titleScreen = this.createEntity(TitleScreen, {});
   }
 
   start(skipTransition: boolean) {
+    this.c.entities.destroy(this.titleScreen);
+
     this.fsm.start();
     var level = parseInt(getParameterByName('level') || '1', 10);
     this.session = new Session(this, level);
-    this.session.start(skipTransition);
+    this.session.start(skipTransition, this.titleScreen.starfield);
   }
 
   destroyAll(type) {

@@ -51,11 +51,11 @@ class Session {
     return this.state === IN_LEVEL_STATE;
   }
 
-  start(skipTransition: boolean) {
+  start(skipTransition: boolean, starfield?: any) {
     if (skipTransition) {
       this.enterLevel();
     } else {
-      this._enterBetweenLevels();
+      this._enterBetweenLevels(starfield);
     }
   }
 
@@ -78,10 +78,11 @@ class Session {
     return 5;
   }
 
-  _enterBetweenLevels() {
+  _enterBetweenLevels(starfield?: any) {
     this.state = BETWEEN_LEVELS_STATE;
 
     this.levelTransition = this.game.createEntity(LevelTransition, {
+      starfield: starfield
     });
   }
 

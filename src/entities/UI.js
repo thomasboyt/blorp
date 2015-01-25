@@ -4,23 +4,21 @@
  */
 
 var Entity = require('./Entity');
+
+var palette = {
+  lighter: '#CEE682',
+  light: '#9FBB32',
+  dark: '#426E2B',
+  darker: '#193725'
+};
+
 class UI extends Entity {
   init(settings: any) {
     this.zindex = 999;
   }
 
   drawAttract(ctx: any) {
-    ctx.textAlign = 'center';
-
-    ctx.font = '40px "Press Start 2P"';
-    ctx.fillText('BLORP!', 210, 150);
-
-    var offset = 250;
-
-    ctx.font = '16px "Press Start 2P"';
-    ctx.fillText('arrows move', 200, offset);
-    ctx.fillText('z jumps / x shoots', 200, offset + 20);
-    ctx.fillText("press space to start", 200, offset + 40);
+    // This is now handled by TitleScreen
   }
 
   drawPlaying(ctx: any) {
@@ -70,16 +68,8 @@ class UI extends Entity {
   }
 
   draw(ctx: any) {
-    ctx.strokeStyle = 'black';
-    ctx.fillStyle = 'black';
-
-    var viewCenter = this.game.c.renderer.getViewCenter();
-    var viewTranslate = {
-      x: (viewCenter.x - this.game.width / 2),
-      y: (viewCenter.y - this.game.height / 2)
-    };
-
-    ctx.translate(viewTranslate.x, viewTranslate.y);
+    ctx.strokeStyle = palette.darker;
+    ctx.fillStyle = palette.darker;
 
     var fsm = this.game.fsm;
 

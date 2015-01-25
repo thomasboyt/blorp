@@ -1,8 +1,6 @@
 /* @flow */
 
-var Entity = require('./Entity');
-var _ = require('lodash');
-var math = require('../lib/math');
+var StarfieldEntity = require('./StarfieldEntity');
 var Timer = require('../lib/Timer');
 
 var palette = {
@@ -12,22 +10,12 @@ var palette = {
   darker: '#193725'
 };
 
-var gridSize = 80;
-
 type Coordinates = {x: number; y: number};
 
-type Star = {
-  x: number;
-  y: number;
-  ty: number;
-};
-
-class LevelTransition extends Entity {
+class LevelTransition extends StarfieldEntity {
   shipImg: Image;
   landed: boolean;
   beginLevelTimer: Timer;
-
-  starfield: Array<Star>;  // </>
 
   shipPos: Coordinates;
   originPlanetCenter: Coordinates;
@@ -37,16 +25,11 @@ class LevelTransition extends Entity {
   init(settings: any) {
     this.shipImg = this.game.assets.images.flyingShip;
 
-    var numStars = (this.game.height / gridSize) * (this.game.width / gridSize);
+    this.initStarfield();
 
-    this.starfield = _.range(0, numStars).map((n) => {
-      var tx = (n % (this.game.width / gridSize)) * gridSize;
-      var ty = (Math.floor(n / (this.game.width / gridSize))) * gridSize;
-
-      var x = math.randInt(tx, tx + gridSize);
-      var y = math.randInt(ty, ty + gridSize);
-      return {x, y, ty};
-    });
+    if (settings.starfield) {
+      this.starfield = settings.starfield;
+    }
 
     this.shipPos = {
       x: 150,
@@ -69,19 +52,7 @@ class LevelTransition extends Entity {
   }
 
   update(dt: number) {
-    // Move stars
-    var starSpeed = dt/100 * 6;
-
-    for (var i = this.starfield.length - 1; i >= 0; i--) {
-      var star = this.starfield[i];
-      star.x -= starSpeed;
-
-      if (star.x < -5) {
-        // Move star to other end of field
-        star.x = math.randInt(this.game.width, this.game.width + gridSize);
-        star.y = math.randInt(star.ty, star.ty + gridSize);
-      }
-    }
+    this.updateStarfield(dt);
 
     // If landed, don't scroll planets + tick begin level timer
     if (this.destPlanetCenter.x - 50 < this.shipPos.x) {
@@ -110,15 +81,7 @@ class LevelTransition extends Entity {
   }
 
   draw(ctx: any) {
-    // draw background
-    ctx.fillStyle = palette.darker;
-    ctx.fillRect(0, 0, this.game.width, this.game.height);
-
-    // draw starfield
-    ctx.fillStyle = palette.lighter;
-    this.starfield.forEach((star) => {
-      ctx.fillRect(star.x, star.y, 5, 5);
-    });
+    this.drawStarfield(ctx);
 
     // draw ship
     var distFromOrigin = this.shipPos.x - this.originPlanetCenter.x - 75;
