@@ -118,7 +118,7 @@ class Game {
       setTimeout(() => {
         this.loaded(assets);
         if (getParameterByName('skiptitle')) {
-          this.start();
+          this.start(true);
         }
       }, 0);
     });
@@ -141,11 +141,11 @@ class Game {
     this.audioManager.setAudioMap(assets.audio);
   }
 
-  start() {
+  start(skipTransition: boolean) {
     this.fsm.start();
     var level = parseInt(getParameterByName('level') || '1', 10);
     this.session = new Session(this, level);
-    this.session.start();
+    this.session.start(skipTransition);
   }
 
   destroyAll(type) {
@@ -178,7 +178,7 @@ class Game {
     if (this.fsm.is('attract') || this.fsm.is('ended') || this.fsm.is('dead')) {
       if (this.c.inputter.isPressed(this.c.inputter.SPACE)) {
         setTimeout(() => {
-          this.start(this.fsm);
+          this.start(false);
         }, 0);
       }
     }

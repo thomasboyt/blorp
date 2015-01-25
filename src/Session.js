@@ -51,20 +51,26 @@ class Session {
     return this.state === IN_LEVEL_STATE;
   }
 
+  start(skipTransition: boolean) {
+    if (skipTransition) {
+      this.enterLevel();
+    } else {
+      this._enterBetweenLevels();
+    }
+  }
+
   escape() {
     this.escaped = true;
 
     var ship = this.game.c.entities.all(Ship)[0];
     ship.fly();
 
+    // TODO: make this a Timer()
     setTimeout(() => {
       this.game.ended();
+      this.currentLevelNumber += 1;
+      this._enterBetweenLevels();
     }, 3000);
-  }
-
-  start() {
-    // Enter transition state
-    this._enterBetweenLevels();
   }
 
   _getFuelNeeded(): number {
@@ -89,7 +95,7 @@ class Session {
     this.exitEnabled = false;
     this.escaped = false;
 
-    var levelName = this.game.config.levelOrder[this.currentLevelNumber];
+    var levelName = this.game.config.levelOrder[this.currentLevelNumber - 1];
 
     this.currentWorld = this.game.createEntity(World, {
       level: this.game.assets.levels[levelName]
