@@ -71,7 +71,7 @@ class Session {
     ship.fly();
 
     // TODO: make this a Timer()
-    setTimeout(() => {
+    this.game.setTimeout(() => {
       this.game.ended();
       this.currentLevelNumber += 1;
       this._enterBetweenLevels();
@@ -101,7 +101,12 @@ class Session {
     this.exitEnabled = false;
     this.escaped = false;
 
-    var levelName = this.game.config.levelOrder[this.currentLevelNumber - 1];
+    var levelOrder = this.game.config.levelOrder;
+
+    // Loop levels
+    var level = this.currentLevelNumber - 1;
+    level = level % levelOrder.length;
+    var levelName = levelOrder[level];
 
     this.currentWorld = this.game.createEntity(World, {
       level: this.game.assets.levels[levelName]
@@ -112,12 +117,6 @@ class Session {
 
     this.fuelSpawner.spawnNext(0);
   }
-
-  // _nextLevel() {
-  //   this.currentLevelNumber += 1;
-  //   var level = this.game.config.levelOrder[this.currentLevelNumber];
-  //   this._startLevel(level);
-  // }
 
   update(dt: number) {
     if (this.state === IN_LEVEL_STATE) {
