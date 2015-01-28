@@ -1,30 +1,52 @@
 /* @flow */
 
+var Game = require('../Game');
 var _ = require('lodash');
-var Spawner = require('./Spawner');
 var FuelPickup = require('../entities/FuelPickup');
 var math = require('../lib/math');
+
+type Coordinates = {x: number; y: number};
 
 // TODO: this might be set dynamically depending on time elapsed?
 var timeToLive = 10000;
 
-class FuelSpawner extends Spawner {
-  spawnNext() {
-    var choices = this.game.session.currentWorld.pickupSafeTileLocations;
+class FuelSpawner {
+  game: Game;
 
-    var coordinates = _.sample(choices);
-
-    this.game.createEntity(FuelPickup, {
-      center: {
-        x: coordinates.x * this.game.tileWidth + this.game.tileWidth / 2,
-        y: coordinates.y * this.game.tileHeight + this.game.tileHeight / 2
-      },
-      timeToLive: timeToLive
-    });
+  constructor(game: Game) {
+    this.game = game;
   }
 
-  getSpawnDelay(): number {
-    return timeToLive;
+  spawnNext(spawnDelay: number) {
+    this.game.setTimeout(() => {
+      var choices = this.game.session.currentWorld.pickupSafeTileLocations;
+
+      choices = this._filterTilesNearPlayer(choices);
+
+      var coordinates = _.sample(choices);
+
+      this.game.createEntity(FuelPickup, {
+        center: {
+          x: coordinates.x * this.game.tileWidth + this.game.tileWidth / 2,
+          y: coordinates.y * this.game.tileHeight + this.game.tileHeight / 2
+        },
+        timeToLive: timeToLive
+      });
+    }, spawnDelay);
+  }
+
+  _filterTilesNearPlayer(choices: Array<Coordinates>): Array<Coordinates> {
+    var player = this.game.session.currentWorld.getPlayer();
+
+    // Get tile player is in
+    var ptx = Math.floor(player.center.x / this.game.tileWidth);
+    var pty = Math.floor(player.center.y / this.game.tileHeight);
+
+    // Filter out tiles within 3 spaces of player
+    return choices.filter((coordinates) => {
+      return Math.abs(coordinates.x - ptx) > 3 &&
+             Math.abs(coordinates.y - pty) > 3;
+    });
   }
 }
 

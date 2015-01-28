@@ -296,7 +296,7 @@ class Player extends PlatformerPhysicsEntity {
     }
 
     if (other instanceof FuelPickup) {
-      this.game.session.addFuel(1);
+      this.game.session.gotFuel();
       this.game.c.entities.destroy(other);
     }
 

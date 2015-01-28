@@ -117,7 +117,6 @@ class World extends Entity {
     }
 
     return path;
-      
   }
 
   destroy() {

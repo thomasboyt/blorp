@@ -39,11 +39,16 @@ class Session {
     this.currentPoints += points;
   }
 
-  addFuel(fuel: number) {
+  gotFuel() {
     this.currentFuel += 1;
+    this.nextFuel();
+  }
 
+  nextFuel() {
     if (this.currentFuel >= this.fuelNeeded) {
       this.exitEnabled = true;
+    } else {
+      this.fuelSpawner.spawnNext(3000);
     }
   }
 
@@ -104,6 +109,8 @@ class Session {
 
     this.enemySpawner = new EnemySpawner(this.game);
     this.fuelSpawner = new FuelSpawner(this.game);
+
+    this.fuelSpawner.spawnNext(0);
   }
 
   // _nextLevel() {
@@ -117,10 +124,6 @@ class Session {
       if (!this.escaped) {
         if (!this.game.disableSpawner) {
           this.enemySpawner.update(dt);
-
-          if (!this.exitEnabled) {
-            this.fuelSpawner.update(dt);
-          }
         }
       }
     }

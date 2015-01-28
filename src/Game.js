@@ -10,6 +10,8 @@ var AudioManager = require('./lib/AudioManager');
 var AssetPreloader = require('./lib/AssetPreloader');
 var setupFullscreen = require('./lib/setupFullscreen');
 var setupPause = require('./lib/setupPause');
+var Timeouts = require('./lib/Timeouts');
+var Timer = require('./lib/Timer');
 
 var assets = require('./config/assets');
 var config = require('./config/game');
@@ -50,6 +52,7 @@ class Game {
   c: Coquette;
   assets: AssetMap;
   levels: LevelMap;
+  _timeouts: Timeouts;
 
   width: number;
   height: number;
@@ -95,6 +98,7 @@ class Game {
     setupFullscreen(this.c.inputter.F);
     setupPause(this.c, this.c.inputter.P);
     addRegister(this.c);
+    this._timeouts = new Timeouts();
 
     this.fsm = StateMachine.create({
       initial: 'loading',
@@ -172,6 +176,10 @@ class Game {
     this.session.currentWorld.destroy();
   }
 
+  setTimeout(cb: () => void, ms: number): Timer {
+    return this._timeouts.addCb(cb, ms);
+  }
+
 
   // Coquette hooks
 
@@ -191,6 +199,8 @@ class Game {
     if (this.fsm.is('playing')) {
       this.session.update(dt);
     }
+
+    this._timeouts.update(dt);
   }
 }
 

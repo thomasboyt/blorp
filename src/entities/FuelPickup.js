@@ -53,6 +53,7 @@ class TimerExtendPickup extends Entity {
 
     if (this.destroyTimer.expired()) {
       this.game.c.entities.destroy(this);
+      this.game.session.nextFuel();
     }
   }
 }
