@@ -99,9 +99,15 @@ class Player extends PlatformerPhysicsEntity {
     if (this.shotThrottleTimer.expired()) {
       this.shotThrottleTimer.reset();
 
+      var direction = this.facingLeft ? 'left' : 'right';
+
+      if (this.game.c.inputter.isDown(this.game.c.inputter.UP_ARROW)) {
+        direction = 'up';
+      }
+
       this.game.createEntity(Bullet, {
         creator: this,
-        direction: this.facingLeft ? 'left' : 'right',  // TODO: shoot up/down?
+        direction: direction,
         speed: 15
       });
     }
