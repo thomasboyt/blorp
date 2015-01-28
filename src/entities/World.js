@@ -11,13 +11,13 @@ var Maths = require('coquette').Collider.Maths;
 var PF = require('pathfinding');
 
 // TIL flow will not parse 3D arrays
-type Tiles = Array<Array<?Entity>>;  // </>
-type TileLayers = Array<Tiles>;  // </>
+type Tiles = Array<Array<?Entity>>;
+type TileLayers = Array<Tiles>;
 
 type Coordinates = {x: number; y: number};
 
 // Get the indicies of every item in array for which cb(item) returns true
-function filterIndex(array: Array<any>, cb: (item: any) => boolean): Array<number> {  // </></>
+function filterIndex(array: Array<any>, cb: (item: any) => boolean): Array<number> {
   var res = [];
   for (var i = 0; i < array.length; i++) {
     if (cb(array[i]) === true) {
@@ -36,9 +36,9 @@ class World extends Entity {
 
   level: Level;
   tileLayers: TileLayers;
-  objects: Array<Entity>;  // </>
+  objects: Array<Entity>;
 
-  pickupSafeTileLocations: Array<Coordinates>;  // </>
+  pickupSafeTileLocations: Array<Coordinates>;
 
   _pfGrid: any;  // TODO: a Grid declaration would be nice
   _lastPtx: number;
@@ -74,7 +74,7 @@ class World extends Entity {
   /**
    * Accepts a pixel coordinate pair, not tiled
    */
-  findPathToPlayer(from: Coordinates): Array<Array<number>> {  // </>
+  findPathToPlayer(from: Coordinates): Array<Array<number>> {
     var tx = Math.floor(from.x / this.game.tileWidth);
     var ty = Math.floor(from.y / this.game.tileWidth);
 
@@ -101,7 +101,7 @@ class World extends Entity {
     return path;
   }
 
-  findPath(from: Coordinates, to: Coordinates): Array<Array<number>> {  // </>
+  findPath(from: Coordinates, to: Coordinates): Array<Array<number>> {
     var grid = this._pfGrid.clone();
     var finder = new PF.AStarFinder({
       allowDiagonal: true,
@@ -212,7 +212,7 @@ class World extends Entity {
     return grid;
   }
 
-  _findPickupSafeTiles(): Array<Coordinates> {  // </>
+  _findPickupSafeTiles(): Array<Coordinates> {
     // Filter down to only tiles that are:
     //    a. Empty
     //    b. Between 1 & 2 tiles above a Block or Platform

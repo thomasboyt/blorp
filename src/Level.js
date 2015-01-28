@@ -18,7 +18,7 @@ type TileIndexEntityMap = {
   [key:number]: string
 };
 
-type TileMap = Array<Array<number>>;  // </>
+type TileMap = Array<Array<number>>;
 
 type StringMap = {
   [key:string]: string
@@ -26,8 +26,8 @@ type StringMap = {
 
 class Level {
   tileset: Tileset;
-  tileLayers: Array<TileMap>;  // </>
-  objects: Array<Object>; // </>
+  tileLayers: Array<TileMap>;
+  objects: Array<Object>;
 
   constructor(level: string, tileset: Tileset) {
     var parser = new DOMParser();
@@ -57,7 +57,7 @@ class Level {
     return this.getEntityTypeForTile(tile);
   }
 
-  _parseTileLayers(doc: Document): Array<TileMap> {  // </>
+  _parseTileLayers(doc: Document): Array<TileMap> {
     var layers = doc.querySelectorAll('layer data');
 
     return Array.prototype.map.call(layers, (layer) => {
@@ -71,7 +71,7 @@ class Level {
     });
   }
 
-  _parseObjects(doc: Document): Array<Object> {  // </>
+  _parseObjects(doc: Document): Array<Object> {
     var objects = doc.querySelectorAll('objectgroup object');
 
     return Array.prototype.map.call(objects, (object) => {

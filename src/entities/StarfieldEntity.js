@@ -20,7 +20,7 @@ type Star = {
 var gridSize = 80;
 
 class StarfieldEntity extends Entity {
-  starfield: Array<Star>;  // </>
+  starfield: Array<Star>;
 
   initStarfield() {
     var numStars = (this.game.height / gridSize) * (this.game.width / gridSize);
