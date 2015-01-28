@@ -13,6 +13,7 @@ module.exports = {
   playerSpeed: 8,
   climbSpeed: 8,
   jumpSpeed: 14,
+  fireThrottleMs: 200,
 
   blorpSpeed: 3,
   blatSpeed: 3,

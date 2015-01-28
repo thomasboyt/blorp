@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Maths = require('coquette').Collider.Maths;
+var Timer = require('../lib/Timer');
 
 var Entity = require('./Entity');
 var Ladder = require('./tiles/Ladder');
@@ -24,6 +25,7 @@ var DEAD_STATE = 'dead';
 class Player extends PlatformerPhysicsEntity {
   img: Image;
   anim: AnimationManager;
+  shotThrottleTimer: Timer;
 
   facingLeft: boolean;
 
@@ -40,6 +42,7 @@ class Player extends PlatformerPhysicsEntity {
 
     this.facingLeft = false;
 
+    this.shotThrottleTimer = new Timer(this.game.config.fireThrottleMs);
     var sheet = new SpriteSheet(this.game.assets.images.playerSheet, this.game.tileWidth, this.game.tileHeight);
 
     this.anim = new AnimationManager('stand', {
@@ -93,11 +96,15 @@ class Player extends PlatformerPhysicsEntity {
   }
 
   _shoot() {
-    this.game.createEntity(Bullet, {
-      creator: this,
-      direction: this.facingLeft ? 'left' : 'right',  // TODO: shoot up/down?
-      speed: 15
-    });
+    if (this.shotThrottleTimer.expired()) {
+      this.shotThrottleTimer.reset();
+
+      this.game.createEntity(Bullet, {
+        creator: this,
+        direction: this.facingLeft ? 'left' : 'right',  // TODO: shoot up/down?
+        speed: 15
+      });
+    }
   }
 
   update(dt: number) {
@@ -113,6 +120,8 @@ class Player extends PlatformerPhysicsEntity {
   }
 
   _updateWalking(dt: number) {
+    this.shotThrottleTimer.update(dt);
+
     var step = dt/100;
 
     // TODO: Does this allow you to double jump if you jump at the peak of an arc?
