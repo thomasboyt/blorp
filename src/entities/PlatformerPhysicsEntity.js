@@ -5,6 +5,7 @@ var rectangleIntersection = require('../lib/math').rectangleIntersection;
 
 var Block = require('./tiles/Block');
 var Platform = require('./tiles/Platform');
+var Elevator = require('./Elevator');
 
 class PlatformerPhysicsEntity extends Entity {
   grounded: boolean;
@@ -55,7 +56,7 @@ class PlatformerPhysicsEntity extends Entity {
 
       this.afterBlockCollision(other, intersect);
 
-    } else if (other instanceof Platform) {
+    } else if (other instanceof Platform || other instanceof Elevator) {
       if (this.getFootBox) {
         intersect = rectangleIntersection(this.getFootBox(), other);
       } else {
@@ -63,7 +64,7 @@ class PlatformerPhysicsEntity extends Entity {
       }
 
       // Platforms can only be collided with from the top
-      if (intersect.w > intersect.h && intersect.fromAbove && other.isEdgeCollidable.top && this.vec.y > 0) {
+      if (intersect.w > intersect.h && intersect.fromAbove && this.vec.y > 0) {
         this.center.y -= intersect.h;
         this.vec.y = 0;
         this.grounded = true;

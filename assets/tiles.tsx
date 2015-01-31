@@ -42,4 +42,10 @@
   </properties>
   <image width="40" height="20" source="images/ship.png"/>
  </tile>
+ <tile id="7">
+  <properties>
+   <property name="Entity" value="ElevatorSegment"/>
+  </properties>
+  <image width="20" height="20" source="images/elevator_line.png"/>
+ </tile>
 </tileset>

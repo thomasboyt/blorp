@@ -18,6 +18,8 @@ module.exports = {
   blorpSpeed: 3,
   blatSpeed: 3,
 
+  elevatorSpeed: 5,
+
   playerWalkAnimMs: 200,
   blorpWalkAnimMs: 200,
   blatFlyAnimMs: 100,
@@ -30,6 +32,7 @@ module.exports = {
   startingLives: 3,
 
   zIndexes: {
+    elevator: 98,
     exit: 99,
     spawnPoint: 100,
     player: 101,
