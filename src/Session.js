@@ -20,6 +20,7 @@ class Session {
   state: string;
   currentLevelNumber: number;
   currentPoints: number;
+  currentLives: number;
 
   // Level state
   currentFuel: number;
@@ -32,6 +33,7 @@ class Session {
 
     this.state = BETWEEN_LEVELS_STATE;
     this.currentPoints = 0;
+    this.currentLives = this.game.config.startingLives;
     this.currentLevelNumber = currentLevelNumber;
   }
 
@@ -64,6 +66,17 @@ class Session {
     }
   }
 
+  died() {
+    this.currentLives -= 1;
+
+    if (this.currentLives === 0) {
+      this.game.gameOver();
+    } else {
+      this.game.ended();
+      this.enterLevel();
+    }
+  }
+
   escape() {
     this.escaped = true;
 
@@ -80,7 +93,7 @@ class Session {
 
   _getFuelNeeded(): number {
     // TODO: scale this based on currentLevelNumber?
-    return 5;
+    return this.game.config.fuelRequired;
   }
 
   _enterBetweenLevels(starfield?: any) {

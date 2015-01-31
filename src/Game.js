@@ -19,6 +19,7 @@ var Level = require('./Level');
 
 var Entity = require('./entities/Entity');
 var UI = require('./entities/UI');
+var LoadingUI = require('./entities/LoadingUI');
 var Player = require('./entities/Player');
 var Blorp = require('./entities/Blorp');
 var Blat = require('./entities/Blat');
@@ -66,6 +67,7 @@ class Game {
   session: Session;
 
   ui: UI;
+  loadingUI: LoadingUI;
   titleScreen: TitleScreen;
 
   constructor() {
@@ -104,14 +106,13 @@ class Game {
       initial: 'loading',
       events: [
         { name: 'loaded', from: ['loading'], to: 'attract' },
-        { name: 'start', from: ['attract', 'ended', 'dead'], to: 'playing' },
-        { name: 'died', from: 'playing', to: 'dead' },
-        { name: 'end', from: 'playing', to: 'ended' }
+        { name: 'start', from: ['attract', 'gameOver'], to: 'playing' },
+        { name: 'gameOver', from: 'playing', to: 'gameOver' },
       ]
     });
 
     this.preloader = new AssetPreloader(assets, this.audioManager.ctx);
-    this.ui = this.createEntity(UI, {});
+    this.loadingUI = this.createEntity(LoadingUI, {});
 
     if (getParameterByName('godmode')) {
       this.godMode = true;
@@ -145,7 +146,10 @@ class Game {
 
     this.assets = assets;
     this.audioManager.setAudioMap(assets.audio);
+
     this.titleScreen = this.createEntity(TitleScreen, {});
+    this.c.entities.destroy(this.loadingUI);
+    this.ui = this.createEntity(UI, {});
   }
 
   start(skipTransition: boolean) {
@@ -163,8 +167,8 @@ class Game {
     });
   }
 
-  died() {
-    this.fsm.died();
+  gameOver() {
+    this.fsm.gameOver();
     this.ended();
   }
 
@@ -188,7 +192,7 @@ class Game {
       this.audioManager.toggleMute();
     }
 
-    if (this.fsm.is('attract') || this.fsm.is('ended') || this.fsm.is('dead')) {
+    if (this.fsm.is('attract') || this.fsm.is('gameOver')) {
       if (this.c.inputter.isPressed(this.c.inputter.SPACE)) {
         setTimeout(() => {
           this.start(false);

@@ -305,7 +305,7 @@ class Player extends PlatformerPhysicsEntity {
 
         // TODO: move this to a Timer inside updateDead()
         setTimeout(() => {
-          this.game.died();
+          this.game.session.died();
         }, 2000);
       }
     }

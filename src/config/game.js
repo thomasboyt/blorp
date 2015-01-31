@@ -26,7 +26,8 @@ module.exports = {
   initialSpawnDelay: 4000,
   timeToFinalSpawnDelayMs: 60 * 1000,
 
-  startingTimeMs: 20 * 1000,
+  fuelRequired: 5,
+  startingLives: 3,
 
   zIndexes: {
     exit: 99,

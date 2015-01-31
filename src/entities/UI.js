@@ -4,6 +4,8 @@
  */
 
 var Entity = require('./Entity');
+var SpriteSheet = require('../lib/SpriteSheet');
+var Sprite = require('../lib/Sprite');
 
 var palette = {
   lighter: '#CEE682',
@@ -13,17 +15,20 @@ var palette = {
 };
 
 class UI extends Entity {
+  playerSprite: Sprite;
+
   init(settings: any) {
     this.zindex = 999;
-  }
 
-  drawAttract(ctx: any) {
-    // This is now handled by TitleScreen
+    // TODO: move SpriteSheets to the assets hash so they can be shared
+    var playerSheet = new SpriteSheet(this.game.assets.images.playerSheet, this.game.tileWidth, this.game.tileHeight);
+    this.playerSprite = playerSheet.get(0);
   }
 
   drawPlaying(ctx: any) {
     if (this.game.session.isInLevel()) {
       this._drawFuel(ctx);
+      this._drawLives(ctx);
     }
   }
 
@@ -39,32 +44,22 @@ class UI extends Entity {
     ctx.fillText(fuelLeft, 50, 48);
   }
 
-  drawDead(ctx: any) {
+  _drawLives(ctx: any) {
+    var sprite = this.playerSprite;
+    sprite.draw(ctx, 75, 28);
+
+    ctx.font = '16px "Press Start 2P"';
+    var lives = this.game.session.currentLives;
+    ctx.fillText(lives, 95, 48);
+  }
+
+  drawGameOver(ctx: any) {
     ctx.font = '16px "Press Start 2P"';
     ctx.textAlign = "center";
 
-    var reason = this.game.timeLeft < 0 ? 'out of time :(' : 'you died :(';
-    ctx.fillText(reason, 200, 180);
+    ctx.fillText('game over', 200, 180);
     ctx.fillText('press space', 200, 200);
-    ctx.fillText('to retry...', 200, 220);
-  }
-
-  drawLoading(ctx: any) {
-    this._drawLoadingBar(ctx);
-  }
-
-  _drawLoadingBar(ctx: any) {
-    var numTotal = this.game.preloader.numTotal;
-    var numLoaded = this.game.preloader.numLoaded;
-
-    this._drawBar(ctx, numLoaded / numTotal, 150, 200, 100, 20);
-  }
-
-  _drawBar(ctx: any, fillPercent: number, x: number, y: number, width: number, height: number) {
-    var barWidth = width * fillPercent;
-
-    ctx.strokeRect(x, y, width, height);
-    ctx.fillRect(x, y, barWidth, height);
+    ctx.fillText('to play again', 200, 220);
   }
 
   draw(ctx: any) {
@@ -75,12 +70,8 @@ class UI extends Entity {
 
     if (fsm.is('playing')) {
       this.drawPlaying(ctx);
-    } else if (fsm.is('dead')) {
-      this.drawDead(ctx);
-    } else if (fsm.is('attract')) {
-      this.drawAttract(ctx);
-    } else if (fsm.is('loading')) {
-      this.drawLoading(ctx);
+    } else if (fsm.is('gameOver')) {
+      this.drawGameOver(ctx);
     }
 
   }
