@@ -30,6 +30,7 @@ module.exports = {
 
   levels: {
     'arena': require('../../assets/levels/arena.tmx'),
-    '2': require('../../assets/levels/2.tmx')
+    '2': require('../../assets/levels/2.tmx'),
+    'on_a_ledge': require('../../assets/levels/on_a_ledge.tmx')
   }
 };

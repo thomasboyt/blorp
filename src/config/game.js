@@ -47,6 +47,7 @@ module.exports = {
 
   levelOrder: [
     '2',
-    'arena'
+    'arena',
+    'on_a_ledge'
   ]
 };
