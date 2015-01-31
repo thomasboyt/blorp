@@ -46,11 +46,11 @@ class UI extends Entity {
 
   _drawLives(ctx: any) {
     var sprite = this.playerSprite;
-    sprite.draw(ctx, 75, 28);
+    sprite.draw(ctx, 325, 28);
 
     ctx.font = '16px "Press Start 2P"';
     var lives = this.game.session.currentLives;
-    ctx.fillText(lives, 95, 48);
+    ctx.fillText(lives, 350, 48);
   }
 
   drawGameOver(ctx: any) {
