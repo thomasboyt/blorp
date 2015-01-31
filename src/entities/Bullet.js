@@ -23,6 +23,8 @@ class Bullet extends Entity {
   creator: Entity;
   speed: number;
   velocity: Coordinates;
+  maxDistance: number;
+  distanceTraveled: number;
 
   init(settings: Options) {
     this.size = { x:2, y:2 };
@@ -30,6 +32,9 @@ class Bullet extends Entity {
 
     this.speed = settings.speed;
     var creator = this.creator = settings.creator;
+
+    this.maxDistance = this.game.tileHeight * 5;
+    this.distanceTraveled = 0;
 
     // this.game.audioManager.play('shoot');
 
@@ -66,15 +71,24 @@ class Bullet extends Entity {
 
   update(dt: number) {
     var step = dt/100;
-    this.center.x += this.velocity.x * step;
-    this.center.y += this.velocity.y * step;
+    var xSpd = this.velocity.x * step;
+    var ySpd = this.velocity.y * step;
+    this.center.x += xSpd;
+    this.center.y += ySpd;
+
+    var distance = Math.sqrt(Math.abs(xSpd*xSpd) + Math.abs(ySpd*ySpd));
+    this.distanceTraveled += distance;
+
+    if (this.distanceTraveled > this.maxDistance) {
+      this.game.c.entities.destroy(this);
+    }
 
     // Detect if it goes off-screen
     if (this.center.x - this.size.x / 2 < 0 ||
         this.center.y - this.size.y / 2 < 0 ||
         this.center.x + this.size.x / 2 > this.game.width ||
         this.center.y + this.size.y / 2 > this.game.height) {
-      this.c.entities.destroy(this);
+      this.c.game.entities.destroy(this);
     }
   }
 
