@@ -9,8 +9,8 @@ var Ladder = require('./tiles/Ladder');
 var Spikes = require('./tiles/Spikes');
 var FuelPickup = require('./FuelPickup');
 
-var Blorp = require('./Blorp');
-var Blat = require('./Blat');
+var Blorp = require('./enemies/Blorp');
+var Blat = require('./enemies/Blat');
 var Bullet = require('./Bullet');
 var Ship = require('./Ship');
 

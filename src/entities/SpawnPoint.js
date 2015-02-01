@@ -2,8 +2,9 @@
 
 var _ = require('lodash');
 var Entity = require('./Entity');
-var Blorp = require('./Blorp');
-var Blat = require('./Blat');
+var Blorp = require('./enemies/Blorp');
+var Blat = require('./enemies/Blat');
+var Blorb = require('./enemies/Blorb');
 
 class SpawnPoint extends Entity {
   img: Image;
@@ -20,7 +21,7 @@ class SpawnPoint extends Entity {
   }
 
   spawnBlorp() {
-    var Type = _.sample([Blat, Blorp]);
+    var Type = _.sample([Blat, Blorp, Blorb]);
 
     this.game.createEntity(Type, {
       center: {

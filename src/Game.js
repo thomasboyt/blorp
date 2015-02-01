@@ -21,8 +21,8 @@ var Entity = require('./entities/Entity');
 var UI = require('./entities/UI');
 var LoadingUI = require('./entities/LoadingUI');
 var Player = require('./entities/Player');
-var Blorp = require('./entities/Blorp');
-var Blat = require('./entities/Blat');
+var Blorp = require('./entities/enemies/Blorp');
+var Blat = require('./entities/enemies/Blat');
 var FuelPickup = require('./entities/FuelPickup');
 var TitleScreen = require('./entities/TitleScreen');
 

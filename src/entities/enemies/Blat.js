@@ -1,17 +1,14 @@
 /* @flow */
 
-var Entity = require('./Entity');
-var Bullet = require('./Bullet');
-var SpriteSheet = require('../lib/SpriteSheet');
-var AnimationManager = require('../lib/AnimationManager');
-var math = require('../lib/math');
+var Entity = require('../Entity');
+var Bullet = require('../Bullet');
+var SpriteSheet = require('../../lib/SpriteSheet');
+var AnimationManager = require('../../lib/AnimationManager');
+var math = require('../../lib/math');
 
 class Blat extends Entity {
   img: Image;
   anim: AnimationManager;
-
-  _lastPtx: number;
-  _lastPty: number;
 
   vec: {
     x: number;

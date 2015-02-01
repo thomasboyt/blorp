@@ -17,8 +17,9 @@ module.exports = {
 
   blorpSpeed: 3,
   blatSpeed: 3,
+  blorbSpeed: 3,
 
-  elevatorSpeed: 3,
+  elevatorSpeed: 5,
 
   playerWalkAnimMs: 200,
   blorpWalkAnimMs: 200,
@@ -38,6 +39,7 @@ module.exports = {
     player: 101,
     blat: 102,
     blorp: 102,
+    blorb: 102,
     bullet: 103,
     timeExtend: 104,
     flyingShip: 200
@@ -45,7 +47,8 @@ module.exports = {
 
   pointValues: {
     blorp: 100,
-    blat: 150
+    blat: 150,
+    blorb: 100
   },
 
   levelOrder: [

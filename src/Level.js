@@ -10,7 +10,6 @@ var ENTITY_TYPES = {
   'Spikes': require('./entities/tiles/Spikes'),
   'ElevatorSegment': require('./entities/tiles/ElevatorSegment'),
   'Player': require('./entities/Player'),
-  'Blorp': require('./entities/Blorp'),
   'Exit': require('./entities/Ship'),
   'Spawner': require('./entities/SpawnPoint'),
   'Elevator': require('./entities/Elevator'),

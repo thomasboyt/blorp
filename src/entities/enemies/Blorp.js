@@ -1,13 +1,13 @@
 /* @flow */
 
-var Entity = require('./Entity');
-var Block = require('./tiles/Block');
-var Platform = require('./tiles/Platform');
-var Player = require('./Player');
-var Bullet = require('./Bullet');
-var SpriteSheet = require('../lib/SpriteSheet');
-var AnimationManager = require('../lib/AnimationManager');
-var PlatformerPhysicsEntity = require('./PlatformerPhysicsEntity');
+var Entity = require('../Entity');
+var Block = require('../tiles/Block');
+var Platform = require('../tiles/Platform');
+var Player = require('../Player');
+var Bullet = require('../Bullet');
+var SpriteSheet = require('../../lib/SpriteSheet');
+var AnimationManager = require('../../lib/AnimationManager');
+var PlatformerPhysicsEntity = require('../PlatformerPhysicsEntity');
 
 class Blorp extends PlatformerPhysicsEntity  {
   img: Image;
