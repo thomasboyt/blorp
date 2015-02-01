@@ -25,6 +25,10 @@ class FuelSpawner {
 
       var coordinates = _.sample(choices);
 
+      if (!coordinates) {
+        throw new Error('Failed to find safe place to spawn fuel :(');
+      }
+
       this.game.createEntity(FuelPickup, {
         center: {
           x: coordinates.x * this.game.tileWidth + this.game.tileWidth / 2,
@@ -44,7 +48,7 @@ class FuelSpawner {
 
     // Filter out tiles within 3 spaces of player
     return choices.filter((coordinates) => {
-      return Math.abs(coordinates.x - ptx) > 3 &&
+      return Math.abs(coordinates.x - ptx) > 3 ||
              Math.abs(coordinates.y - pty) > 3;
     });
   }
