@@ -59,6 +59,10 @@ class World extends Entity {
     var row = Math.floor(y / this.game.tileHeight);
     var col = Math.floor(x / this.game.tileWidth);
 
+    if (col > this.level.getWidth() - 1 || row > this.level.getHeight() - 1 || col < 0 || row < 0) {
+      return null;
+    }
+
     return this.tileLayers[layer][row][col];
   }
 
@@ -181,7 +185,7 @@ class World extends Entity {
 
     // Create entities from objects
     this.objects = level.objects.map((obj) => {
-      return this.game.createEntity(obj.Type, {
+      var entity = this.game.createEntity(obj.Type, {
         // Tiled objects give x, y from bottom left:
         // https://github.com/bjorn/tiled/issues/91
         center: {
@@ -190,6 +194,13 @@ class World extends Entity {
         },
         properties: obj.properties
       });
+
+      if (entity instanceof Player) {
+        this._lastPtx = Math.floor(entity.center.x / this.game.tileWidth);
+        this._lastPty = Math.floor(entity.center.y / this.game.tileHeight);
+      }
+
+      return entity;
     });
 
     this._pfGrid = this._createPFGrid();
