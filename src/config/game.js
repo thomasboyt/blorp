@@ -18,7 +18,7 @@ module.exports = {
   blorpSpeed: 3,
   blatSpeed: 3,
 
-  elevatorSpeed: 5,
+  elevatorSpeed: 3,
 
   playerWalkAnimMs: 200,
   blorpWalkAnimMs: 200,
@@ -51,6 +51,7 @@ module.exports = {
   levelOrder: [
     '2',
     'arena',
-    'on_a_ledge'
+    'on_a_ledge',
+    '4'
   ]
 };

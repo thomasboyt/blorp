@@ -135,6 +135,10 @@ class Player extends PlatformerPhysicsEntity {
       this.grounded = false;
     }
 
+    if (this.center.y + this.size.y / 2 > this.game.session.currentWorld.height) {
+      this._enterDead();
+    }
+
     // Zero out x velocity, since it doesn't have any form of (de)acceleration
     this.vec.x = 0;
 
@@ -274,12 +278,15 @@ class Player extends PlatformerPhysicsEntity {
     return (bottomEdgeTile instanceof Ladder && centerTile instanceof Ladder);
   }
 
-  _checkOnElevator(): boolean {
-    // Is the player currently within the elevator? Manual collision check :D
-  }
-
   _updateDead(dt: number) {
     this.anim.set('dead');
+  }
+
+  _enterDead() {
+    this.state = DEAD_STATE;
+    this.vec.x = 0;
+    this.vec.y = 0;
+    this.game.session.died();
   }
 
   draw(ctx: any) {
@@ -307,12 +314,7 @@ class Player extends PlatformerPhysicsEntity {
       }
 
       if (this.state !== DEAD_STATE) {
-        this.state = DEAD_STATE;
-
-        // TODO: move this to a Timer inside updateDead()
-        setTimeout(() => {
-          this.game.session.died();
-        }, 2000);
+        this._enterDead();
       }
     }
 

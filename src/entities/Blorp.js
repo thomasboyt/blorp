@@ -54,6 +54,10 @@ class Blorp extends PlatformerPhysicsEntity  {
       this.grounded = false;
     }
 
+    if (this.center.y - this.size.y / 2 > this.game.session.currentWorld.height) {
+      this.game.c.entities.destroy(this);
+    }
+
     var spd = this.game.config.blorpSpeed * step;
 
     var walkDirection = this.walkingRight ? 1 : -1;

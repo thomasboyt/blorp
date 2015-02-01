@@ -69,12 +69,14 @@ class Session {
   died() {
     this.currentLives -= 1;
 
-    if (this.currentLives === 0) {
-      this.game.gameOver();
-    } else {
-      this.game.ended();
-      this.enterLevel();
-    }
+    this.game.setTimeout(() => {
+      if (this.currentLives === 0) {
+        this.game.gameOver();
+      } else {
+        this.game.ended();
+        this.enterLevel();
+      }
+    }, 2000);
   }
 
   escape() {
