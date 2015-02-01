@@ -7,6 +7,7 @@ class Elevator extends Entity {
   img: Image;
   flyingImg: Image;
   flying: boolean;
+  direction: number;
 
   init(settings: any) {
     this.center = settings.center;
@@ -16,11 +17,15 @@ class Elevator extends Entity {
 
     this.zindex = this.game.config.zIndexes.elevator;
 
-    this.direction = 1;
+    this.direction = settings.properties.direction === 'up' ? -1 : 1;
+  }
+
+  getSpeed(): number {
+    return this.direction * this.game.config.elevatorSpeed;
   }
 
   update(dt: number) {
-    var vel = this.direction * dt/100 * this.game.config.elevatorSpeed;
+    var vel = this.getSpeed() * dt/100;
 
     this.center.y += vel;
 

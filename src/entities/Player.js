@@ -93,6 +93,7 @@ class Player extends PlatformerPhysicsEntity {
 
   jump() {
     this.vec.y = -this.game.config.jumpSpeed;
+    this.currentElevator = null;
   }
 
   _shoot() {
@@ -130,8 +131,7 @@ class Player extends PlatformerPhysicsEntity {
 
     var step = dt/100;
 
-    // TODO: Does this allow you to double jump if you jump at the peak of an arc?
-    if (this.vec.y !== 0) {
+    if (this.vec.y !== 0 && !this.currentElevator) {
       this.grounded = false;
     }
 
@@ -193,6 +193,8 @@ class Player extends PlatformerPhysicsEntity {
     }
 
     this.vec.y += this.game.config.gravityAccel;
+
+    this.updateElevator();
 
     this.center.x += this.vec.x * step;
     this.center.y += this.vec.y * step;
@@ -270,6 +272,10 @@ class Player extends PlatformerPhysicsEntity {
     var centerTile = this.game.session.currentWorld.getTileAt(Ladder.layerNum, this.center.x, this.center.y);
 
     return (bottomEdgeTile instanceof Ladder && centerTile instanceof Ladder);
+  }
+
+  _checkOnElevator(): boolean {
+    // Is the player currently within the elevator? Manual collision check :D
   }
 
   _updateDead(dt: number) {

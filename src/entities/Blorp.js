@@ -50,7 +50,7 @@ class Blorp extends PlatformerPhysicsEntity  {
   update(dt: number) {
     var step = dt/100;
 
-    if (this.vec.y !== 0) {
+    if (this.vec.y !== 0 && !this.currentElevator) {
       this.grounded = false;
     }
 
@@ -89,6 +89,8 @@ class Blorp extends PlatformerPhysicsEntity  {
     }
 
     this.vec.y += this.game.config.gravityAccel;
+
+    this.updateElevator();
 
     this.center.x += this.vec.x;
     this.center.y += this.vec.y * step;

@@ -6,9 +6,11 @@ var rectangleIntersection = require('../lib/math').rectangleIntersection;
 var Block = require('./tiles/Block');
 var Platform = require('./tiles/Platform');
 var Elevator = require('./Elevator');
+var Maths = require('coquette').Collider.Maths;
 
 class PlatformerPhysicsEntity extends Entity {
   grounded: boolean;
+  currentElevator: ?Elevator;
 
   vec: {
     x: number;
@@ -16,6 +18,21 @@ class PlatformerPhysicsEntity extends Entity {
   };
 
   afterBlockCollision(block: Block, intersect) {}
+
+  updateElevator() {
+    if (!this.currentElevator) {
+      return;
+
+    } else {
+      // Are we still on current elevator?
+      if (!Maths.unrotatedRectanglesIntersecting(this, this.currentElevator)) {
+        this.currentElevator = null;
+        return;
+      }
+
+      this.vec.y = this.currentElevator.getSpeed();
+    }
+  }
 
   handlePlatformerCollision(other: Entity) {
     var intersect;
@@ -68,6 +85,11 @@ class PlatformerPhysicsEntity extends Entity {
         this.center.y -= intersect.h;
         this.vec.y = 0;
         this.grounded = true;
+
+        if (other instanceof Elevator) {
+          this.currentElevator = other;
+          this.vec.y = other.getSpeed();
+        }
       }
     }
   }
