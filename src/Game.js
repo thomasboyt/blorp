@@ -21,9 +21,6 @@ var Entity = require('./entities/Entity');
 var UI = require('./entities/UI');
 var LoadingUI = require('./entities/LoadingUI');
 var Player = require('./entities/Player');
-var Blorp = require('./entities/enemies/Blorp');
-var Blat = require('./entities/enemies/Blat');
-var FuelPickup = require('./entities/FuelPickup');
 var TitleScreen = require('./entities/TitleScreen');
 
 var Session = require('./Session');
@@ -161,7 +158,7 @@ class Game {
     this.session.start(skipTransition, this.titleScreen.starfield);
   }
 
-  destroyAll(type) {
+  destroyAll(type: any) {
     this.c.entities.all(type).map((entity) => {
       this.c.entities.destroy(entity);
     });
@@ -169,15 +166,6 @@ class Game {
 
   gameOver() {
     this.fsm.gameOver();
-    this.ended();
-  }
-
-  ended() {
-    // TODO: Where should this go? Probably not here.
-    this.destroyAll(Blorp);
-    this.destroyAll(Blat);
-    this.destroyAll(FuelPickup);
-    this.session.currentWorld.destroy();
   }
 
   setTimeout(cb: () => void, ms: number): Timer {

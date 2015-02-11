@@ -7,6 +7,12 @@ var LevelTransition = require('./entities/LevelTransition');
 var EnemySpawner = require('./spawners/EnemySpawner');
 var FuelSpawner = require('./spawners/FuelSpawner');
 
+// Things to destroy
+var Blorp = require('./entities/enemies/Blorp');
+var Blat = require('./entities/enemies/Blat');
+var Blorb = require('./entities/enemies/Blorb');
+var FuelPickup = require('./entities/FuelPickup');
+
 var IN_LEVEL_STATE = 'inLevel';
 var BETWEEN_LEVELS_STATE = 'betweenLevels';
 
@@ -70,11 +76,12 @@ class Session {
     this.currentLives -= 1;
 
     this.game.setTimeout(() => {
+      this._clearWorld();
+
       if (this.currentLives === 0) {
         this.game.gameOver();
       } else {
-        this.game.ended();
-        this.enterLevel();
+        this._setupWorld();
       }
     }, 2000);
   }
@@ -87,7 +94,7 @@ class Session {
 
     // TODO: make this a Timer()
     this.game.setTimeout(() => {
-      this.game.ended();
+      this._clearWorld();
       this.currentLevelNumber += 1;
       this._enterBetweenLevels();
     }, 3000);
@@ -116,9 +123,19 @@ class Session {
     this.exitEnabled = false;
     this.escaped = false;
 
-    var levelOrder = this.game.config.levelOrder;
+    this._setupWorld();
+  }
 
-    // Loop levels
+  _clearWorld() {
+    this.game.destroyAll(Blorp);
+    this.game.destroyAll(Blat);
+    this.game.destroyAll(Blorb);
+    this.game.destroyAll(FuelPickup);
+    this.currentWorld.destroy();
+  }
+
+  _setupWorld() {
+    var levelOrder = this.game.config.levelOrder;
     var level = this.currentLevelNumber - 1;
     level = level % levelOrder.length;
     var levelName = levelOrder[level];
